@@ -75,6 +75,7 @@ export default async function Home() {
       </ul>
     </GuideInfoBox>
   );
+
   return (
     <ChatWindow
       endpoint="api/chat"
