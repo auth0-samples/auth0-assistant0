@@ -3,8 +3,8 @@ import { Auth0Client } from '@auth0/nextjs-auth0/server';
 export const auth0 = new Auth0Client({
     // this is required to get federated access tokens from services like Google
     authorizationParameters: {
-      access_type: "offline",
-      prompt: "consent",
+        access_type: 'offline',
+        prompt: 'consent',
     },
 });
 
