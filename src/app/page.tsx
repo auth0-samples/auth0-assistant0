@@ -35,7 +35,7 @@ export default async function Home() {
         <li className="text-l">
           🤝
           <span className="ml-2">
-            This template showcases a simple chatbot using Vercel's{' '}
+            This template showcases a simple chatbot using Vercel&apos;s{' '}
             <a className="text-blue-500" href="https://sdk.vercel.ai/docs" target="_blank">
               AI SDK
             </a>{' '}

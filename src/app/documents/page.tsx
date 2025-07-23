@@ -78,7 +78,7 @@ export default async function DocumentsPage() {
         ) : (
           <div className="p-6 border rounded-lg shadow-sm bg-background text-center">
             <p className="text-muted-foreground">
-              You haven't uploaded any documents yet. Use the form above to get started.
+              You haven&apos;t uploaded any documents yet. Use the form above to get started.
             </p>
           </div>
         )}
