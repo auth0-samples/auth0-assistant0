@@ -1,0 +1,19 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "auth0-ai>=0.2.0",
+    "auth0-ai-langchain>=1.0.0b3",
+    "auth0-fastapi",
+    "fastapi[standard]>=0.116.1",
+    "google-api-python-client>=2.176.0",
+    "httpx>=0.28.1",
+    "itsdangerous",
+    "langchain-openai>=0.3.28",
+    "langgraph-cli[inmem]",
+    "langgraph[openai]>=0.5.4",
+    "pydantic-settings>=2.10.1",
+]
