@@ -24,5 +24,5 @@ export function getSignupUrl() {
 }
 
 export function getLogoutUrl() {
-  return `${import.meta.env.VITE_API_HOST}/api/auth/logout?returnTo=${window.location}`;
+  return `${import.meta.env.VITE_API_HOST}/api/auth/logout?returnTo=${window.location.origin}`;
 }

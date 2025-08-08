@@ -7,6 +7,7 @@ import { ActiveLink } from "@/components/navbar";
 import ChatPage from "@/pages/ChatPage";
 import useAuth, { getLogoutUrl } from "@/lib/use-auth";
 import ClosePage from "@/pages/ClosePage";
+import DocumentsPage from "@/pages/DocumentsPage";
 
 export default function Layout() {
   const { user } = useAuth();
@@ -57,6 +58,7 @@ export default function Layout() {
           <Routes>
             <Route path="/" element={<ChatPage />} />
             <Route path="/close" element={<ClosePage />} />
+            <Route path="/documents" element={<DocumentsPage />} />
           </Routes>
         </div>
       </div>

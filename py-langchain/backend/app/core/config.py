@@ -16,16 +16,32 @@ class Settings(BaseSettings):
     API_PREFIX: str = "/api"
     APP_BASE_URL: str
 
+    # Auth0
     AUTH0_DOMAIN: str
     AUTH0_CLIENT_ID: str
     AUTH0_CLIENT_SECRET: str
     AUTH0_SECRET: str
 
-    SHOP_API_URL: str = ""
-    SHOP_API_AUDIENCE: str = ""
+    # Auth0 FGA
+    FGA_STORE_ID: str
+    FGA_CLIENT_ID: str
+    FGA_CLIENT_SECRET: str
+    FGA_API_URL: str = "https://api.us1.fga.dev"
+    FGA_API_AUDIENCE: str = "https://api.us1.fga.dev/"
+    FGA_API_TOKEN_ISSUER: str = "auth.fga.dev"
+    FGA_AUTHORIZATION_MODEL_ID: str | None = None
 
+    # Shop API
+    SHOP_API_URL: str = "http://localhost:3001/api/shop"
+    SHOP_API_AUDIENCE: str = "https://api.shop-online-demo.com"
+
+    # OpenAI
     OPENAI_API_KEY: str
 
+    # Database
+    DATABASE_URL: str
+
+    # LangGraph server
     LANGGRAPH_API_URL: str = "http://localhost:54367"
     LANGGRAPH_API_KEY: str = ""
 

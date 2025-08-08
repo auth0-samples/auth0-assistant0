@@ -44,6 +44,13 @@ Next, install the required packages using your preferred package manager, e.g. u
 uv sync --frozen
 ```
 
+Now you're ready to start and migrate the database:
+
+```bash
+# start the postgres database
+docker compose up -d
+```
+
 Now you're ready to run the development server:
 
 ```bash

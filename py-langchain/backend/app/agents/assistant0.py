@@ -4,9 +4,10 @@ from langchain_openai import ChatOpenAI
 from app.agents.tools.shop_online import shop_online
 from app.agents.tools.google_calendar import list_upcoming_events
 from app.agents.tools.user_info import get_user_info
+from app.agents.tools.context_docs import get_context_docs
 
 
-tools = [get_user_info, list_upcoming_events, shop_online]
+tools = [get_user_info, list_upcoming_events, shop_online, get_context_docs]
 
 llm = ChatOpenAI(model="gpt-4.1-mini")
 
