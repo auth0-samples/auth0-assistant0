@@ -9,8 +9,9 @@ export const getAccessToken = async () => getAccessTokenFromTokenVault();
 const auth0AICustomAPI = new Auth0AI({
   auth0: {
     domain: process.env.AUTH0_DOMAIN!,
-    clientId: process.env.AUTH0_CUSTOM_API_CLIENT_ID!,
-    clientSecret: process.env.AUTH0_CUSTOM_API_CLIENT_SECRET!,
+    // For token exchange with Token Vault, we want to provide the Custom API Client credentials
+    clientId: process.env.AUTH0_CUSTOM_API_CLIENT_ID!, // Custom API Client ID for token exchange
+    clientSecret: process.env.AUTH0_CUSTOM_API_CLIENT_SECRET!, // Custom API Client secret
   },
 });
 
@@ -25,11 +26,11 @@ export const withGoogleConnection = (scopes: string[]) =>
     subjectTokenType: SUBJECT_TOKEN_TYPES.SUBJECT_TYPE_ACCESS_TOKEN,
   });
 
-export const withGmailRead = withGoogleConnection(['https://www.googleapis.com/auth/gmail.readonly']);
+export const withGmailRead = withGoogleConnection(['openid', 'https://www.googleapis.com/auth/gmail.readonly']);
 
-export const withGmailWrite = withGoogleConnection(['https://www.googleapis.com/auth/gmail.compose']);
+export const withGmailWrite = withGoogleConnection(['openid', 'https://www.googleapis.com/auth/gmail.compose']);
 
-export const withCalendar = withGoogleConnection(['https://www.googleapis.com/auth/calendar.events']);
+export const withCalendar = withGoogleConnection(['openid', 'https://www.googleapis.com/auth/calendar.events']);
 
 // Async Authorization flow for user confirmation
 // Note: you must use a client application that has the CIBA grant type enabled
@@ -45,7 +46,7 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
   audience: process.env['SHOP_API_AUDIENCE']!,
   /**
    * Controls how long the authorization request is valid.
-  */
+   */
   // requestedExpiry: 301,
 
   /**
