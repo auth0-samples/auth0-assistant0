@@ -16,6 +16,8 @@ import { gmailDraftTool, gmailSearchTool } from '@/lib/tools/gmail';
 import { getCalendarEventsTool } from '@/lib/tools/google-calender';
 import { shopOnlineTool } from '@/lib/tools/shop-online';
 import { getContextDocumentsTool } from '@/lib/tools/context-docs';
+import { listRepositories } from '@/lib/tools/list-gh-repos';
+import { listGitHubEvents } from '@/lib/tools/list-gh-events';
 
 const date = new Date().toISOString();
 
@@ -41,6 +43,8 @@ export async function POST(req: NextRequest) {
     getCalendarEventsTool,
     shopOnlineTool,
     getContextDocumentsTool,
+    listRepositories,
+    listGitHubEvents,
   };
 
   const modelMessages = convertToModelMessages(messages);
