@@ -33,6 +33,12 @@ export const withGitHubConnection = auth0AI.withTokenForConnection({
   credentialsContext: 'tool-call',
 });
 
+export const withSlack = auth0AI.withTokenForConnection({
+  connection: 'sign-in-with-slack',
+  scopes: ['channels:read', 'groups:read'],
+  refreshToken: getRefreshToken,
+});
+
 // CIBA flow for user confirmation
 export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
   userID: async () => {

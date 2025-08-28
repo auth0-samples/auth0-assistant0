@@ -18,6 +18,7 @@ import { shopOnlineTool } from '@/lib/tools/shop-online';
 import { getContextDocumentsTool } from '@/lib/tools/context-docs';
 import { listRepositories } from '@/lib/tools/list-gh-repos';
 import { listGitHubEvents } from '@/lib/tools/list-gh-events';
+import { listSlackChannels } from '@/lib/tools/list-slack-channels';
 
 const date = new Date().toISOString();
 
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
     getContextDocumentsTool,
     listRepositories,
     listGitHubEvents,
+    listSlackChannels,
   };
 
   const modelMessages = convertToModelMessages(messages);
