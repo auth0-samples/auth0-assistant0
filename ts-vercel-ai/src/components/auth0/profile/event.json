@@ -1,0 +1,95 @@
+{
+  "transaction": {
+    "acr_values": [],
+    "id": "mflNomDzE-6LWD51t9hHDmDlG1X-X6On",
+    "locale": "en",
+    "prompt": [],
+    "protocol": "oidc-basic-profile",
+    "redirect_uri": "http://localhost:3000/auth/callback",
+    "requested_scopes": ["link_account", "openid", "profile", "offline_access"],
+    "response_type": ["code"],
+    "state": "Pxh3gIv-RZWIRU3MIreTzsx0PNLQcb93eJiPrGNXiH0",
+    "ui_locales": [],
+    "metadata": {}
+  },
+  "authentication": { "methods": [{ "name": "federated", "timestamp": "2025-08-20T13:08:42.128Z" }] },
+  "authorization": { "roles": ["can_buy"] },
+  "connection": { "id": "con_6WXwrvUKTlSHuEuj", "metadata": {}, "name": "google-oauth2", "strategy": "google-oauth2" },
+  "resource_server": { "identifier": "https://genai-96757190233246.eu.auth0.com/userinfo" },
+  "tenant": { "id": "genai-96757190233246" },
+  "secrets": {
+    "ACTION_SECRET": "95c6e7e41ae40933901a9e20cb768cd7858bc4a085d2ac619b779a1be8ef4eb8",
+    "AUTH0_CLIENT_ID": "dr7InylmRwbagFYV0F85jdtwk4rNbrCl",
+    "AUTH0_CLIENT_SECRET": "NBdfdtQji1tqGM9XFkL1Shb86joLpRO8cgnoTwF4ypU_fpWe2OC-w57cTRdXSYtf"
+  },
+  "session": { "id": "WbA057l3SksVVKekD5ArWD2q_-lAPSx8" },
+  "configuration": {
+    "DEBUG": "account-linking:error",
+    "ENFORCE_MFA": "no",
+    "ENFORCE_EMAIL_VERIFICATION": "no",
+    "PIN_IP_ADDRESS": "no"
+  },
+  "client": {
+    "client_id": "dr7InylmRwbagFYV0F85jdtwk4rNbrCl",
+    "name": "WebApp Quickstart Client",
+    "metadata": { "quickstart": "user-auth" }
+  },
+  "request": {
+    "ip": "188.90.163.26",
+    "asn": "50266",
+    "method": "GET",
+    "query": {
+      "client_id": "dr7InylmRwbagFYV0F85jdtwk4rNbrCl",
+      "code_challenge": "3hFIqN01bOCL_nwelwPXBwAYAk3aRISGej7-KBsxfYk",
+      "code_challenge_method": "S256",
+      "idTokenHint": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkpzVF9vV2dMekNKT2NrNWlqYlBCVCJ9.eyJnaXZlbl9uYW1lIjoiRGVlcHUiLCJmYW1pbHlfbmFtZSI6IksgU2FzaWRoYXJhbiIsIm5pY2tuYW1lIjoiZDR1ZHRzIiwibmFtZSI6IkRlZXB1IEsgU2FzaWRoYXJhbiIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NKS3NEY3gwQkJnMGc2U2h3UXVmVVVxQ2ZHNjdzSktfeDcyc3Y3Y2xqdzFBSjI1YjM0SERnPXM5Ni1jIiwidXBkYXRlZF9hdCI6IjIwMjUtMDgtMjBUMTM6MDg6NDIuMTEzWiIsImVtYWlsIjoiZDR1ZHRzQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpc3MiOiJodHRwczovL2dlbmFpLTk2NzU3MTkwMjMzMjQ2LmV1LmF1dGgwLmNvbS8iLCJhdWQiOiJkcjdJbnlsbVJ3YmFnRllWMEY4NWpkdHdrNHJOYnJDbCIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTAwOTI5MjI5MDMzMDM5NjMwMDQyIiwiaWF0IjoxNzU1Njk1MzIyLCJleHAiOjE3NTU2OTg5MjIsInNpZCI6IldiQTA1N2wzU2tzVlZLZWtENUFyV0QycV8tbEFQU3g4Iiwibm9uY2UiOiItb20xRG8zYTg1M2ZLY3ZjZ3R6RXlXZWU2bC1aczFpRTRWWnRuSml0U25JIn0.6zNLQDqMoZfNh5JgMxaEArzEJvpdXtzKHOPG4_YZTP5KAS-DM_G0J6GhRSUFB9GscTL1DUU1LH2nEoF3CDCLxISRADtwdrIHC74jDEoreVXDklN1JcdJlwxx7RC8Q7urw7fhwBu1ShiocCdpGBuGxK578mhmpZQxXXOYK5tjtb6pqkFRxM_hZtbbKMn7ZN_56W4IsAna6r2KjHPn5Q_gJbgSe0gMxIGOQO7izo3y0yFuEtjeE4DEzhMZFO_TVaPt55lU0LT0PJlCJkciDt2ycN22CCNNuwWpUDwQHd599X3_mL_fLmpzrgw76H6-_-An7UXMwMAMfZ7n3Q8PavXHDg",
+      "nonce": "JY4ZtbMUKAKNV5eTeIGQ79a5tEGJhXpST6tkxommdQg",
+      "redirect_uri": "http://localhost:3000/auth/callback",
+      "requested_connection": "github",
+      "response_type": "code",
+      "scope": "link_account openid profile offline_access",
+      "state": "Pxh3gIv-RZWIRU3MIreTzsx0PNLQcb93eJiPrGNXiH0"
+    },
+    "body": {},
+    "geoip": {
+      "cityName": "Utrecht",
+      "continentCode": "EU",
+      "countryCode3": "NLD",
+      "countryCode": "NL",
+      "countryName": "The Netherlands",
+      "latitude": 52.0941,
+      "longitude": 5.0504,
+      "subdivisionCode": "UT",
+      "subdivisionName": "Utrecht",
+      "timeZone": "Europe/Amsterdam"
+    },
+    "hostname": "genai-96757190233246.eu.auth0.com",
+    "language": "en-GB,en-US;q=0.9,en;q=0.8,nl;q=0.7",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+  },
+  "stats": { "logins_count": 93 },
+  "user": {
+    "app_metadata": {},
+    "created_at": "2025-04-08T12:28:57.563Z",
+    "email_verified": true,
+    "email": "d4udts@gmail.com",
+    "family_name": "K Sasidharan",
+    "given_name": "Deepu",
+    "identities": [
+      {
+        "connection": "google-oauth2",
+        "isSocial": true,
+        "provider": "google-oauth2",
+        "userId": "100929229033039630042",
+        "user_id": "100929229033039630042"
+      }
+    ],
+    "name": "Deepu K Sasidharan",
+    "nickname": "d4udts",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocJKsDcx0BBg0g6ShwQufUUqCfG67sJK_x72sv7cljw1AJ25b34HDg=s96-c",
+    "updated_at": "2025-08-20T13:08:42.113Z",
+    "user_id": "google-oauth2|100929229033039630042",
+    "user_metadata": {},
+    "multifactor": ["guardian"]
+  }
+}
