@@ -1,5 +1,5 @@
 import { tool } from '@langchain/core/tools';
-import { addHours, formatISO } from 'date-fns';
+import { endOfDay, formatISO, startOfDay } from 'date-fns';
 import { GaxiosError } from 'gaxios';
 import { google } from 'googleapis';
 import { z } from 'zod';
@@ -7,7 +7,7 @@ import { FederatedConnectionError } from '@auth0/ai/interrupts';
 
 import { getAccessToken } from '../auth0-ai';
 
-export const checkUsersCalendarTool = tool(
+export const getCalendarEventsTool = tool(
   async ({ date }) => {
     // Get the access token from Auth0 AI
     const accessToken = await getAccessToken();
@@ -21,18 +21,38 @@ export const checkUsersCalendarTool = tool(
         access_token: accessToken,
       });
 
-      const response = await calendar.freebusy.query({
+      // Get events for the entire day
+      const response = await calendar.events.list({
         auth,
-        requestBody: {
-          timeMin: formatISO(date),
-          timeMax: addHours(date, 1).toISOString(),
-          timeZone: 'UTC',
-          items: [{ id: 'primary' }],
-        },
+        calendarId: 'primary',
+        timeMin: formatISO(startOfDay(date)),
+        timeMax: formatISO(endOfDay(date)),
+        singleEvents: true,
+        orderBy: 'startTime',
+        maxResults: 50,
       });
 
+      const events = response.data.items || [];
+
       return {
-        available: response.data?.calendars?.primary?.busy?.length === 0,
+        date: formatISO(date, { representation: 'date' }),
+        eventsCount: events.length,
+        events: events.map((event) => ({
+          id: event.id,
+          summary: event.summary || 'No title',
+          description: event.description,
+          startTime: event.start?.dateTime || event.start?.date,
+          endTime: event.end?.dateTime || event.end?.date,
+          location: event.location,
+          attendees:
+            event.attendees?.map((attendee) => ({
+              email: attendee.email,
+              name: attendee.displayName,
+              responseStatus: attendee.responseStatus,
+            })) || [],
+          status: event.status,
+          htmlLink: event.htmlLink,
+        })),
       };
     } catch (error) {
       if (error instanceof GaxiosError) {
@@ -45,8 +65,8 @@ export const checkUsersCalendarTool = tool(
     }
   },
   {
-    name: 'check_users_calendar_availability',
-    description: 'Check user availability on a given date time on their calendar',
+    name: 'get_calendar_events',
+    description: `Get calendar events for a given date from the user's Google Calendar`,
     schema: z.object({
       date: z.coerce.date(),
     }),

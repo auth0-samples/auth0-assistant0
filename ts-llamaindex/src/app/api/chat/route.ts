@@ -9,7 +9,7 @@ import { errorSerializer } from '@auth0/ai-vercel/interrupts';
 import { serpApiTool } from '@/lib/tools/serpapi';
 import { getUserInfoTool } from '@/lib/tools/user-info';
 import { gmailDraftTool, gmailSearchTool } from '@/lib/tools/gmail';
-import { checkUsersCalendarTool } from '@/lib/tools/google-calender';
+import { getCalendarEventsTool } from '@/lib/tools/google-calender';
 import { shopOnlineTool } from '@/lib/tools/shop-online';
 import { getContextDocumentsTool } from '@/lib/tools/context-docs';
 
@@ -29,7 +29,7 @@ async function initializeAgent(sanitizedMessages: Message[] = []) {
       getUserInfoTool,
       gmailSearchTool,
       gmailDraftTool,
-      checkUsersCalendarTool,
+      getCalendarEventsTool,
       shopOnlineTool,
       getContextDocumentsTool,
     ];

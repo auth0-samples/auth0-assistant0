@@ -10,7 +10,7 @@ import { getAccessToken, withGoogleConnection, withAsyncAuthorization } from './
 import { getUserInfoTool } from './tools/user-info';
 import { shopOnlineTool } from './tools/shop-online';
 import { getContextDocumentsTool } from './tools/context-docs';
-import { checkUsersCalendarTool } from './tools/google-calender';
+import { getCalendarEventsTool } from './tools/google-calender';
 
 const date = new Date().toISOString();
 
@@ -40,7 +40,7 @@ const tools = [
   withGoogleConnection(new GmailCreateDraft(gmailParams)),
   withGoogleConnection(new GoogleCalendarCreateTool(googleCalendarParams)),
   withGoogleConnection(new GoogleCalendarViewTool(googleCalendarParams)),
-  withGoogleConnection(checkUsersCalendarTool),
+  withGoogleConnection(getCalendarEventsTool),
   getUserInfoTool,
   withAsyncAuthorization(shopOnlineTool),
   getContextDocumentsTool,

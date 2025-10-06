@@ -1,5 +1,5 @@
 import { tool } from 'llamaindex';
-import { addHours, formatISO } from 'date-fns';
+import { endOfDay, formatISO, startOfDay } from 'date-fns';
 import { GaxiosError } from 'gaxios';
 import { google } from 'googleapis';
 import { z } from 'zod';
@@ -7,10 +7,10 @@ import { FederatedConnectionError } from '@auth0/ai/interrupts';
 
 import { getAccessToken, withGoogleConnection } from '../auth0-ai';
 
-export const checkUsersCalendarTool = withGoogleConnection(
+export const getCalendarEventsTool = withGoogleConnection(
   tool({
-    name: 'checkUsersCalendar',
-    description: 'Check user availability on a given date time on their calendar',
+    name: 'getCalendarEvents',
+    description: `Get calendar events for a given date from the user's Google Calendar`,
     parameters: z.object({
       date: z.coerce.date(),
     }),
@@ -27,18 +27,38 @@ export const checkUsersCalendarTool = withGoogleConnection(
           access_token: accessToken,
         });
 
-        const response = await calendar.freebusy.query({
+        // Get events for the entire day
+        const response = await calendar.events.list({
           auth,
-          requestBody: {
-            timeMin: formatISO(date),
-            timeMax: addHours(date, 1).toISOString(),
-            timeZone: 'UTC',
-            items: [{ id: 'primary' }],
-          },
+          calendarId: 'primary',
+          timeMin: formatISO(startOfDay(date)),
+          timeMax: formatISO(endOfDay(date)),
+          singleEvents: true,
+          orderBy: 'startTime',
+          maxResults: 50,
         });
 
+        const events = response.data.items || [];
+
         return {
-          available: response.data?.calendars?.primary?.busy?.length === 0,
+          date: formatISO(date, { representation: 'date' }),
+          eventsCount: events.length,
+          events: events.map((event) => ({
+            id: event.id || '',
+            summary: event.summary || 'No title',
+            description: event.description || '',
+            startTime: event.start?.dateTime || event.start?.date || '',
+            endTime: event.end?.dateTime || event.end?.date || '',
+            location: event.location || '',
+            attendees:
+              event.attendees?.map((attendee) => ({
+                email: attendee.email || '',
+                name: attendee.displayName || '',
+                responseStatus: attendee.responseStatus || '',
+              })) || [],
+            status: event.status || '',
+            htmlLink: event.htmlLink || '',
+          })),
         };
       } catch (error) {
         if (error instanceof GaxiosError) {

@@ -14,7 +14,7 @@ export const withGoogleConnection = auth0AI.withTokenForConnection({
   scopes: [
     'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/gmail.compose',
-    'https://www.googleapis.com/auth/calendar.freebusy',
+    'https://www.googleapis.com/auth/calendar.events',
   ],
   refreshToken: getRefreshToken,
   credentialsContext: 'tool-call',
