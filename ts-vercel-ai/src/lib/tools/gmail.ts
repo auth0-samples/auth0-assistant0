@@ -2,7 +2,7 @@ import { tool } from 'ai';
 import { z } from 'zod';
 import { GmailCreateDraft, GmailSearch } from '@langchain/community/tools/gmail';
 
-import { getAccessToken, withGoogleConnection } from '../auth0-ai';
+import { getAccessToken, withGmailRead, withGmailWrite } from '../auth0-ai';
 
 // Provide the access token to the Gmail tools
 const gmailParams = {
@@ -13,7 +13,7 @@ const gmailParams = {
 
 const gmailSearch = new GmailSearch(gmailParams);
 
-export const gmailSearchTool = withGoogleConnection(
+export const gmailSearchTool = withGmailRead(
   tool({
     description: gmailSearch.description,
     inputSchema: z.object({
@@ -30,7 +30,7 @@ export const gmailSearchTool = withGoogleConnection(
 
 const gmailDraft = new GmailCreateDraft(gmailParams);
 
-export const gmailDraftTool = withGoogleConnection(
+export const gmailDraftTool = withGmailWrite(
   tool({
     description: gmailDraft.description,
     inputSchema: z.object({

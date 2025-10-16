@@ -1,6 +1,6 @@
 import { Auth0AI, getAccessTokenFromTokenVault } from '@auth0/ai-langchain';
 import { AccessDeniedInterrupt } from '@auth0/ai/interrupts';
-import { SUBJECT_TOKEN_TYPES } from "@auth0/ai";
+import { SUBJECT_TOKEN_TYPES } from '@auth0/ai';
 
 // Get the access token for a connection via Auth0
 export const getAccessToken = async () => getAccessTokenFromTokenVault();
@@ -15,18 +15,21 @@ const auth0AICustomAPI = new Auth0AI({
 });
 
 // Connection for Google services
-export const withGoogleConnection = auth0AICustomAPI.withTokenVault({
-  connection: 'google-oauth2',
-  scopes: [
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/gmail.compose',
-    'https://www.googleapis.com/auth/calendar.events',
-  ],
-  accessToken: async (_, config) => {
+export const withGoogleConnection = (scopes: string[]) =>
+  auth0AICustomAPI.withTokenVault({
+    connection: 'google-oauth2',
+    scopes,
+    accessToken: async (_, config) => {
       return config.configurable?.langgraph_auth_user?.getRawAccessToken();
-  },
-  subjectTokenType: SUBJECT_TOKEN_TYPES.SUBJECT_TYPE_ACCESS_TOKEN,
-});
+    },
+    subjectTokenType: SUBJECT_TOKEN_TYPES.SUBJECT_TYPE_ACCESS_TOKEN,
+  });
+
+export const withGmailRead = withGoogleConnection(['https://www.googleapis.com/auth/gmail.readonly']);
+
+export const withGmailWrite = withGoogleConnection(['https://www.googleapis.com/auth/gmail.compose']);
+
+export const withCalendar = withGoogleConnection(['https://www.googleapis.com/auth/calendar.events']);
 
 // Async Authorization flow for user confirmation
 // Note: you must use a client application that has the CIBA grant type enabled
@@ -43,16 +46,16 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
   /**
    * Note: setting a requestedExpiry to >= 301 will currently ensure email is used. Otherwise,
    * the default is to use push notification if available.
-  */
+   */
   // requestedExpiry: 301,
 
   /**
    * The behavior when the authorization request is made.
-   * 
+   *
    * - `block`: The tool execution is blocked until the user completes the authorization.
    * - `interrupt`: The tool execution is interrupted until the user completes the authorization.
    * - a callback: Same as "block" but give access to the auth request and executing logic.
-   * 
+   *
    * Defaults to `interrupt`.
    *
    * When this flag is set to `block`, the execution of the tool awaits

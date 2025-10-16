@@ -6,7 +6,7 @@ import { SerpAPI } from '@langchain/community/tools/serpapi';
 import { GmailCreateDraft, GmailSearch } from '@langchain/community/tools/gmail';
 import { GoogleCalendarCreateTool, GoogleCalendarViewTool } from '@langchain/community/tools/google_calendar';
 
-import { getAccessToken, withGoogleConnection, withAsyncAuthorization } from './auth0-ai';
+import { getAccessToken, withCalendar, withGmailRead, withGmailWrite, withAsyncAuthorization } from './auth0-ai';
 import { getUserInfoTool } from './tools/user-info';
 import { shopOnlineTool } from './tools/shop-online';
 import { getContextDocumentsTool } from './tools/context-docs';
@@ -36,11 +36,11 @@ const tools = [
   new Calculator(),
   // Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
   new SerpAPI(),
-  withGoogleConnection(new GmailSearch(gmailParams)),
-  withGoogleConnection(new GmailCreateDraft(gmailParams)),
-  withGoogleConnection(new GoogleCalendarCreateTool(googleCalendarParams)),
-  withGoogleConnection(new GoogleCalendarViewTool(googleCalendarParams)),
-  withGoogleConnection(getCalendarEventsTool),
+  withGmailRead(new GmailSearch(gmailParams)),
+  withGmailWrite(new GmailCreateDraft(gmailParams)),
+  withCalendar(new GoogleCalendarCreateTool(googleCalendarParams)),
+  withCalendar(new GoogleCalendarViewTool(googleCalendarParams)),
+  withCalendar(getCalendarEventsTool),
   getUserInfoTool,
   withAsyncAuthorization(shopOnlineTool),
   getContextDocumentsTool,
