@@ -5,16 +5,19 @@ description = "Assistant0: An AI Personal Assistant Secured with Auth0 - LangGra
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "auth0-ai>=0.2.0",
-    "auth0-ai-langchain>=1.0.0b3",
+    "auth0-ai>=1.0.0b4",
+    "auth0-ai-langchain>=1.0.0b4",
     "auth0-fastapi>=1.0.0b4",
     "fastapi[standard]>=0.115.14",
     "google-api-python-client>=2.176.0",
     "httpx>=0.28.1",
     "itsdangerous>=2.2.0",
     "langchain-openai>=0.3.28",
-    "langgraph-cli[inmem]>=0.2.12",
+    "langchain-text-splitters>=0.3.0",
+    "langgraph-cli[inmem]>=0.3.6",
     "langgraph>=0.5.4",
+    "langgraph-api==0.2.102",
+    "langgraph-runtime-inmem==0.6.0",
     "pydantic-settings>=2.10.1",
     "sqlmodel>=0.0.24",
     "openfga-sdk>=0.9.5",

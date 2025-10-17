@@ -1,16 +1,13 @@
-"use client";
+'use client';
 
-import { PromptUserContainer } from "../util/prompt-user-container";
-import type { FederatedConnectionAuthProps } from "./FederatedConnectionAuthProps";
+import { PromptUserContainer } from '../util/prompt-user-container';
+import { TokenVaultAuthProps } from './TokenVaultAuthProps';
 
-export function EnsureAPIAccessRedirect({
+export function TokenVaultConsentRedirect({
   interrupt: { requiredScopes, connection },
   connectWidget: { icon, title, description, action, containerClassName },
-  auth: {
-    authorizePath = "/auth/login",
-    returnTo = window.location.pathname,
-  } = {},
-}: FederatedConnectionAuthProps) {
+  auth: { authorizePath = '/auth/login', returnTo = window.location.pathname } = {},
+}: TokenVaultAuthProps) {
   return (
     <PromptUserContainer
       title={title}
@@ -18,12 +15,12 @@ export function EnsureAPIAccessRedirect({
       icon={icon}
       containerClassName={containerClassName}
       action={{
-        label: action?.label ?? "Connect",
+        label: action?.label ?? 'Connect',
         onClick: () => {
           const search = new URLSearchParams({
             returnTo,
             connection,
-            access_type: "offline",
+            access_type: 'offline',
             connection_scope: requiredScopes.join(),
           });
 

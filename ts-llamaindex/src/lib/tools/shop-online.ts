@@ -1,7 +1,7 @@
 import { tool } from 'llamaindex';
 import { z } from 'zod';
 
-import { getCIBACredentials } from '@auth0/ai-vercel';
+import { getAsyncAuthorizationCredentials } from '@auth0/ai-vercel';
 import { withAsyncAuthorization } from '../auth0-ai';
 
 export const shopOnlineTool = withAsyncAuthorization(
@@ -33,7 +33,7 @@ export const shopOnlineTool = withAsyncAuthorization(
         priceLimit,
       };
 
-      const credentials = getCIBACredentials();
+      const credentials = getAsyncAuthorizationCredentials();
       const accessToken = credentials?.accessToken;
 
       if (accessToken) {

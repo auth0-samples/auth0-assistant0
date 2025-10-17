@@ -1,3 +1,33 @@
 {
-  "extends": "next/core-web-vitals"
+  "root": true,
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "import"
+  ],
+  "rules": {
+    "@typescript-eslint/no-var-requires": "off",
+    "import/no-commonjs": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+    "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-unused-vars": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["*.config.{js,cjs,mjs}", "scripts/**", "next.config.*", "postcss.config.js", "tailwind.config.*"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off",
+        "import/no-commonjs": "off"
+      }
+    },
+    {
+      "files": ["**/__tests__/**", "**/*.test.{ts,tsx}"],
+      "env": { "jest": true }
+    }
+  ]
 }

@@ -16,7 +16,7 @@ const gmailSearch = new GmailSearch(gmailParams);
 export const gmailSearchTool = withGoogleConnection(
   tool({
     description: gmailSearch.description,
-    parameters: z.object({
+    inputSchema: z.object({
       query: z.string(),
       maxResults: z.number().optional(),
       resource: z.enum(['messages', 'threads']).optional(),
@@ -33,7 +33,7 @@ const gmailDraft = new GmailCreateDraft(gmailParams);
 export const gmailDraftTool = withGoogleConnection(
   tool({
     description: gmailDraft.description,
-    parameters: z.object({
+    inputSchema: z.object({
       message: z.string(),
       to: z.array(z.string()),
       subject: z.string(),

@@ -1,7 +1,7 @@
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 
-import { getCIBACredentials } from '@auth0/ai-langchain';
+import { getAsyncAuthorizationCredentials } from '@auth0/ai-langchain';
 
 export const shopOnlineTool = tool(
   async ({ product, qty, priceLimit }) => {
@@ -24,7 +24,7 @@ export const shopOnlineTool = tool(
       priceLimit,
     };
 
-    const credentials = getCIBACredentials();
+    const credentials = getAsyncAuthorizationCredentials();
     const accessToken = credentials?.accessToken;
 
     if (accessToken) {

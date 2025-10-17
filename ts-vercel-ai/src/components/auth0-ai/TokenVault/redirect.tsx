@@ -1,13 +1,13 @@
 'use client';
 
 import { PromptUserContainer } from '../util/prompt-user-container';
-import { FederatedConnectionAuthProps } from './federated-connection-auth-props';
+import { TokenVaultAuthProps } from './TokenVaultAuthProps';
 
-export function EnsureAPIAccessRedirect({
+export function TokenVaultConsentRedirect({
   interrupt: { requiredScopes, connection },
   connectWidget: { icon, title, description, action, containerClassName },
   auth: { authorizePath = '/auth/login', returnTo = window.location.pathname } = {},
-}: FederatedConnectionAuthProps) {
+}: TokenVaultAuthProps) {
   return (
     <PromptUserContainer
       title={title}

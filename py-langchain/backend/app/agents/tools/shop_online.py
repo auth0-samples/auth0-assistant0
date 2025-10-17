@@ -1,9 +1,9 @@
 import httpx
 from langchain_core.tools import StructuredTool
-from auth0_ai_langchain.ciba import get_ciba_credentials
+from auth0_ai_langchain.async_authorization import get_async_authorization_credentials
 from pydantic import BaseModel
 
-from app.core.auth0_ai import with_async_user_confirmation
+from app.core.auth0_ai import with_async_authorization
 from app.core.config import settings
 
 
@@ -21,10 +21,10 @@ async def shop_online_fn(product: str, quantity: int):
         # No API set, mock a response
         return f"Ordered {quantity} {product}"
 
-    credentials = get_ciba_credentials()
+    credentials = get_async_authorization_credentials()
 
     if not credentials:
-        raise ValueError("CIBA credentials not found")
+        raise ValueError("Async Authorization credentials not found")
 
     headers = {
         "Authorization": f"Bearer {credentials['access_token']}",
@@ -56,7 +56,7 @@ async def shop_online_fn(product: str, quantity: int):
         }
 
 
-shop_online = with_async_user_confirmation(
+shop_online = with_async_authorization(
     StructuredTool(
         name="shop_online",
         description="Tool to buy products online.",

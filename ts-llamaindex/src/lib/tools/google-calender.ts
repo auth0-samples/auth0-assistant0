@@ -3,7 +3,7 @@ import { endOfDay, formatISO, startOfDay } from 'date-fns';
 import { GaxiosError } from 'gaxios';
 import { google } from 'googleapis';
 import { z } from 'zod';
-import { FederatedConnectionError } from '@auth0/ai/interrupts';
+import { TokenVaultError } from '@auth0/ai/interrupts';
 
 import { getAccessToken, withGoogleConnection } from '../auth0-ai';
 
@@ -63,7 +63,7 @@ export const getCalendarEventsTool = withGoogleConnection(
       } catch (error) {
         if (error instanceof GaxiosError) {
           if (error.status === 401) {
-            throw new FederatedConnectionError(`Authorization required to access the Federated Connection`);
+            throw new TokenVaultError(`Authorization required to access the Token Vault connection.`);
           }
         }
 

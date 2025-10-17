@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
-import { createDataStreamResponse, LlamaIndexAdapter, Message, ToolExecutionError } from 'ai';
+import { createUIMessageStream, createUIMessageStreamResponse, AISDKError, UIMessage } from 'ai';
+import { toUIMessageStream } from '@ai-sdk/llamaindex';
 import { openai, OpenAIAgent } from '@llamaindex/openai';
 import { ChatMessage } from 'llamaindex';
 import { setAIContext } from '@auth0/ai-llamaindex';
@@ -15,12 +16,57 @@ import { getContextDocumentsTool } from '@/lib/tools/context-docs';
 
 const date = new Date().toISOString();
 
-const AGENT_SYSTEM_TEMPLATE = `You are a personal assistant named Assistant0. You are a helpful assistant that can answer questions and help with tasks. You have access to a set of tools, use the tools as needed to answer the user's question. Render the email body as a markdown block, do not wrap it in code blocks. Today is ${date}.`;
+const AGENT_SYSTEM_TEMPLATE = `You are a personal assistant named Assistant0. You are a helpful assistant that can answer questions and help with tasks. 
+You have access to a set of tools. When using tools, you MUST provide valid JSON arguments. Always format tool call arguments as proper JSON objects.
+For example, when calling shop_online tool, format like this:
+{"product": "iPhone", "qty": 1, "priceLimit": 1000}
+Use the tools as needed to answer the user's question. Render the email body as a markdown block, do not wrap it in code blocks. Today is ${date}.`;
+
+// Convert UIMessage array to ChatMessage array for LlamaIndex
+function convertUIMessagesToChatMessages(messages: UIMessage[]): ChatMessage[] {
+  return messages.map((message) => {
+    // Extract text content from UIMessage
+    let content = '';
+    if (Array.isArray((message as any).parts)) {
+      content = (message as any).parts
+        .map((part: any) => {
+          if (typeof part === 'string') return part;
+          if (typeof part?.text === 'string') return part.text;
+          if (typeof part?.content === 'string') return part.content;
+          return '';
+        })
+        .join('');
+    } else {
+      content = (message as any).content ?? '';
+    }
+
+    return {
+      role: message.role === 'user' ? 'user' : 'assistant',
+      content,
+    } as ChatMessage;
+  });
+}
+
+// Get the text content from the latest message
+function getLatestMessageText(messages: UIMessage[]): string {
+  const lastMessage = messages[messages.length - 1];
+  if (Array.isArray((lastMessage as any).parts)) {
+    return (lastMessage as any).parts
+      .map((part: any) => {
+        if (typeof part === 'string') return part;
+        if (typeof part?.text === 'string') return part.text;
+        if (typeof part?.content === 'string') return part.content;
+        return '';
+      })
+      .join('');
+  }
+  return (lastMessage as any).content ?? '';
+}
 
 // Initialize agent once
 let assistant: any = null;
 
-async function initializeAgent(sanitizedMessages: Message[] = []) {
+async function initializeAgent(messages: UIMessage[] = []) {
   if (assistant) return assistant;
 
   try {
@@ -38,7 +84,7 @@ async function initializeAgent(sanitizedMessages: Message[] = []) {
       llm: openai({ model: 'gpt-4.1' }),
       systemPrompt: AGENT_SYSTEM_TEMPLATE,
       tools,
-      chatHistory: sanitizedMessages as ChatMessage[],
+      chatHistory: convertUIMessagesToChatMessages(messages),
       verbose: true,
     });
 
@@ -53,26 +99,26 @@ async function initializeAgent(sanitizedMessages: Message[] = []) {
  * This handler initializes and calls an tool calling agent.
  */
 export async function POST(req: NextRequest) {
-  const { id, messages }: { id: string; messages: Message[] } = await req.json();
+  const { id, messages }: { id: string; messages: UIMessage[] } = await req.json();
 
-  const sanitizedMessages = sanitizeMessages(messages);
 
   setAIContext({ threadID: id });
 
-  return createDataStreamResponse({
+  const stream = createUIMessageStream({
+    originalMessages: messages,
     execute: withInterruptions(
-      async (dataStream) => {
-        const assistant = await initializeAgent(sanitizedMessages);
+      async ({ writer }) => {
+        const assistant = await initializeAgent(messages);
         const stream = await assistant.chat({
-          message: sanitizedMessages[sanitizedMessages.length - 1].content,
+          message: getLatestMessageText(messages),
           stream: true,
         });
 
-        LlamaIndexAdapter.mergeIntoDataStream(stream as any, { dataStream });
+        writer.merge(toUIMessageStream(stream));
       },
       {
-        messages: sanitizedMessages,
-        errorType: ToolExecutionError,
+        messages: messages,
+        errorType: AISDKError,
       },
     ),
     onError: errorSerializer((err: any) => {
@@ -80,17 +126,6 @@ export async function POST(req: NextRequest) {
       return `An error occurred! ${err.message}`;
     }),
   });
-}
 
-// Remove incomplete tool calls in messages
-const sanitizeMessages = (messages: Message[]) => {
-  return messages.filter(
-    (message) =>
-      !(
-        message.role === 'assistant' &&
-        message.toolInvocations &&
-        message.toolInvocations.length > 0 &&
-        message.content === ''
-      ),
-  );
-};
+  return createUIMessageStreamResponse({ stream });
+}

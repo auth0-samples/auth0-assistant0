@@ -7,7 +7,7 @@ const serpApi = new SerpAPI();
 // Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
 export const serpApiTool = tool({
   description: serpApi.description,
-  parameters: z.object({
+  inputSchema: z.object({
     q: z.string(),
   }),
   execute: async ({ q }) => {

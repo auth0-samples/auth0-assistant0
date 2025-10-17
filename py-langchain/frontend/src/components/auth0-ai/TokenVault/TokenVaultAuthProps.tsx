@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
  */
 export type AuthComponentMode = "redirect" | "popup" | "auto";
 
-export type FederatedConnectionAuthProps = {
+export type TokenVaultAuthProps = {
   interrupt: {
     connection: string;
     requiredScopes: string[];

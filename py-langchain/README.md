@@ -84,8 +84,8 @@ Finally, you can start the frontend server in another terminal:
 ```bash
 cd frontend
 cp .env.example .env # Copy the `.env.example` file to `.env`.
-npm install
-npm run dev
+npm install # or bun install
+npm run dev # or bun run dev
 ```
 
 This will start a React vite server on port 5173.

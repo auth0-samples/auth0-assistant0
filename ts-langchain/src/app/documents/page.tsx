@@ -28,12 +28,12 @@ export default async function DocumentsPage() {
 
   function getSharingStatus(sharedWith: string[] | null): ReactNode {
     if (!sharedWith || sharedWith.length === 0) {
-      return <p className="text-sm text-muted-foreground">Not shared</p>;
+      return <span className="text-sm text-muted-foreground">Not shared</span>;
     }
     if (sharedWith.includes(user?.email!)) {
-      return <p className="text-sm text-green-500">Shared with you</p>;
+      return <span className="text-sm text-green-500">Shared with you</span>;
     }
-    return <p className="text-sm text-blue-500">Shared with: {sharedWith.join(', ')}</p>;
+    return <span className="text-sm text-blue-500">Shared with: {sharedWith.join(', ')}</span>;
   }
 
   return (

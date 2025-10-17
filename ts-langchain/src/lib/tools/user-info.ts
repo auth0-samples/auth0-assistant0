@@ -3,7 +3,7 @@ import { tool } from '@langchain/core/tools';
 export const getUserInfoTool = tool(
   async (_input, config?) => {
     // Access credentials from config
-    const accessToken = config?.configurable?._credentials?.accessToken;
+    const accessToken = config?.configurable?.langgraph_auth_user?.getRawAccessToken();
     if (!accessToken) {
       return 'There is no user logged in.';
     }

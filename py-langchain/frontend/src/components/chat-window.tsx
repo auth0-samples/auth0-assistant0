@@ -8,7 +8,7 @@ import { useStream } from "@langchain/langgraph-sdk/react";
 import { type Message } from "@langchain/langgraph-sdk";
 
 import { ChatMessageBubble } from "@/components/chat-message-bubble";
-import { FederatedConnectionInterruptHandler } from "@/components/auth0-ai/FederatedConnections/FederatedConnectionsInterruptHandler";
+import { TokenVaultInterruptHandler } from "@/components/auth0-ai/TokenVault/TokenVaultInterruptHandler";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getLoginUrl } from "@/lib/use-auth";
@@ -23,7 +23,7 @@ function ChatMessages(props: {
     <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
       {props.messages.map((m, i) => {
         return (
-          <ChatMessageBubble key={m.id} message={m} aiEmoji={props.aiEmoji} />
+          <ChatMessageBubble key={m.id} message={m} aiEmoji={props.aiEmoji} allMessages={props.messages} />
         );
       })}
     </div>
@@ -187,7 +187,7 @@ export function ChatWindow(props: {
               />
               <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
                 {!!chat.interrupt?.value && (
-                  <FederatedConnectionInterruptHandler
+                  <TokenVaultInterruptHandler
                     auth={{
                       authorizePath: getLoginUrl(),
                       returnTo: new URL(

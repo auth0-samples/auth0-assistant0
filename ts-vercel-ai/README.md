@@ -39,19 +39,19 @@ Next, you'll need to set up environment variables in your repo's `.env.local` fi
 Next, install the required packages using your preferred package manager and initialize the database.
 
 ```bash
-bun install # or npm install
+npm install # or bun install
 # start the postgres database
 docker compose up -d
 # create the database schema
-bun db:migrate # or npm run db:migrate
+npm run db:migrate # or bun db:migrate
 # initialize FGA store
-bun fga:init # or npm run fga:init
+npm run fga:init # or bun fga:init
 ```
 
 Now you're ready to run the development server:
 
 ```bash
-bun dev # or npm run dev
+npm run dev  # or bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result! Ask the bot something and you'll see a streamed response:

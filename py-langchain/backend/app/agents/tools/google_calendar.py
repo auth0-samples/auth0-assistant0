@@ -2,8 +2,8 @@ from langchain_core.tools import StructuredTool
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from pydantic import BaseModel
-from auth0_ai_langchain.federated_connections import (
-    get_access_token_for_connection,
+from auth0_ai_langchain.token_vault import (
+    get_access_token_from_token_vault,
 )
 import datetime
 import json
@@ -13,10 +13,10 @@ from app.core.auth0_ai import with_calendar_access
 
 async def list_upcoming_events_fn():
     """List upcoming events from the user's Google Calendar"""
-    google_access_token = get_access_token_for_connection()
+    google_access_token = get_access_token_from_token_vault()
     if not google_access_token:
         raise ValueError(
-            "Authorization required to access the Federated Connection API"
+            "Authorization required to access the Token Vault API"
         )
 
     calendar_service = build(

@@ -1,5 +1,11 @@
 import { NextRequest } from 'next/server';
-import { streamText, Message, createDataStreamResponse, DataStreamWriter } from 'ai';
+import {
+  streamText,
+  type UIMessage,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  convertToModelMessages,
+} from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { setAIContext } from '@auth0/ai-vercel';
 import { errorSerializer, withInterruptions } from '@auth0/ai-vercel/interrupts';
@@ -13,17 +19,19 @@ import { getContextDocumentsTool } from '@/lib/tools/context-docs';
 
 const date = new Date().toISOString();
 
-const AGENT_SYSTEM_TEMPLATE = `You are a personal assistant named Assistant0. You are a helpful assistant that can answer questions and help with tasks. You have access to a set of tools, use the tools as needed to answer the user's question. Render the email body as a markdown block, do not wrap it in code blocks. Today is ${date}.`;
+const AGENT_SYSTEM_TEMPLATE = `You are a personal assistant named Assistant0. You are a helpful assistant that can answer questions and help with tasks. 
+You have access to a set of tools. When using tools, you MUST provide valid JSON arguments. Always format tool call arguments as proper JSON objects.
+For example, when calling shop_online tool, format like this:
+{"product": "iPhone", "qty": 1, "priceLimit": 1000}
+Use the tools as needed to answer the user's question. Render the email body as a markdown block, do not wrap it in code blocks. Today is ${date}.`;
 
 /**
  * This handler initializes and calls an tool calling agent.
  */
 export async function POST(req: NextRequest) {
-  const request = await req.json();
+  const { id, messages }: { id: string; messages: Array<UIMessage> } = await req.json();
 
-  const messages = sanitizeMessages(request.messages);
-
-  setAIContext({ threadID: request.id });
+  setAIContext({ threadID: id });
 
   const tools = {
     serpApiTool,
@@ -35,36 +43,51 @@ export async function POST(req: NextRequest) {
     getContextDocumentsTool,
   };
 
-  return createDataStreamResponse({
+  const modelMessages = convertToModelMessages(messages);
+
+  const stream = createUIMessageStream({
+    originalMessages: messages,
     execute: withInterruptions(
-      async (dataStream: DataStreamWriter) => {
+      async ({ writer }) => {
         const result = streamText({
-          model: openai('gpt-4o-mini'),
+          model: openai.chat('gpt-4o-mini'),
           system: AGENT_SYSTEM_TEMPLATE,
-          messages,
-          maxSteps: 5,
-          tools,
+          messages: modelMessages,
+          tools: tools as any,
+          onFinish: (output) => {
+            if (output.finishReason === 'tool-calls') {
+              const lastMessage = output.content[output.content.length - 1];
+              if (lastMessage?.type === 'tool-error') {
+                const { toolName, toolCallId, error, input } = lastMessage;
+                const serializableError = {
+                  cause: error,
+                  toolCallId: toolCallId,
+                  toolName: toolName,
+                  toolArgs: input,
+                };
+
+                throw serializableError;
+              }
+            }
+          },
         });
 
-        result.mergeIntoDataStream(dataStream, {
-          sendReasoning: true,
-        });
+        writer.merge(
+          result.toUIMessageStream({
+            sendReasoning: true,
+          }),
+        );
       },
       {
-        messages,
-        tools,
+        messages: messages,
+        tools: tools as any,
       },
     ),
-    onError: errorSerializer((err: any) => {
+    onError: errorSerializer((err) => {
       console.log(err);
-      return `An error occurred! ${err.message}`;
+      return `An error occurred! ${(err as Error).message}`;
     }),
   });
-}
 
-// Vercel AI tends to get stuck when there are incomplete tool calls in messages
-const sanitizeMessages = (messages: Message[]) => {
-  return messages.filter(
-    (message) => !(message.role === 'assistant' && message.parts && message.parts.length > 0 && message.content === ''),
-  );
-};
+  return createUIMessageStreamResponse({ stream });
+}

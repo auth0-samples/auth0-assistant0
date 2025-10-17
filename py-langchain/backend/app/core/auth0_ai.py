@@ -14,12 +14,12 @@ auth0_ai = Auth0AI(
     )
 )
 
-with_calendar_access = auth0_ai.with_federated_connection(
+with_calendar_access = auth0_ai.with_token_vault(
     connection="google-oauth2",
     scopes=["https://www.googleapis.com/auth/calendar.events"],
 )
 
-with_async_user_confirmation = auth0_ai.with_async_user_confirmation(
+with_async_authorization = auth0_ai.with_async_authorization(
     audience=settings.SHOP_API_AUDIENCE,
     # add any scopes you want to use with your API
     scopes=["openid", "product:buy"],
@@ -39,4 +39,7 @@ with_async_user_confirmation = auth0_ai.with_async_user_confirmation(
     # In practice, the process that is awaiting the user confirmation
     # could crash or timeout before the user approves the request.
     on_authorization_request="block",
+    # Note: Setting a requested expiry greater than 300 (seconds) will force email verification
+    # instead of using the push notification flow.
+    # requested_expiry=301,
 )

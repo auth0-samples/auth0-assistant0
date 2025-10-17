@@ -1,4 +1,5 @@
 import { buildOpenFgaClient } from '@auth0/ai';
+import { config } from 'dotenv';
 
 /**
  * Initializes the OpenFgaClient, writes an authorization model, and configures pre-defined tuples.
@@ -8,7 +9,7 @@ import { buildOpenFgaClient } from '@auth0/ai';
  *    2. Writes an authorization model with specified schema version and type definitions.
  */
 async function main() {
-  require('dotenv').config({ path: ['.env.local', '.env'] });
+  config({ path: ['.env.local', '.env'] });
 
   const fgaClient = buildOpenFgaClient();
 

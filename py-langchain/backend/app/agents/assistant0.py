@@ -16,8 +16,10 @@ def get_prompt():
     today_str = date.today().strftime('%Y-%m-%d')
     return (
         f"You are a personal assistant named Assistant0. You are a helpful assistant that can answer questions and help with tasks. "
-        f"Today's date is {today_str}. You have access to a set of tools, use the tools as needed to answer the user's question. "
-        f"Render the email body as a markdown block, do not wrap it in code blocks."
+        f"You have access to a set of tools. When using tools, you MUST provide valid JSON arguments. Always format tool call arguments as proper JSON objects. "
+        f"For example, when calling shop_online tool, format like this: "
+        f'{{"product": "iPhone", "qty": 1, "priceLimit": 1000}} '
+        f"Use the tools as needed to answer the user's question. Render the email body as a markdown block, do not wrap it in code blocks. Today is {today_str}."
     )
 
 agent = create_react_agent(
