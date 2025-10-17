@@ -9,7 +9,7 @@ Assistant0 an AI personal assistant that consolidates your digital life by dynam
 This template scaffolds an Auth0 + Next.js starter app. It mainly uses the following libraries:
 
 - Vercel's [AI SDK](https://github.com/vercel-labs/ai) to handle the AI agent.
-- The [Auth0 AI SDK](https://github.com/auth0-lab/auth0-ai-js) and [Auth0 Next.js SDK](https://github.com/auth0/nextjs-auth0) to secure the application and call third-party APIs.
+- The [Auth0 AI SDK](https://github.com/auth0/auth0-ai-js) and [Auth0 Next.js SDK](https://github.com/auth0/nextjs-auth0) to secure the application and call third-party APIs.
 - [Auth0 FGA](https://auth0.com/fine-grained-authorization) to define fine-grained access control policies for your tools and RAG pipelines.
 - Postgres with [Drizzle ORM](https://orm.drizzle.team/) and [pgvector](https://github.com/pgvector/pgvector) to store the documents and embeddings.
 

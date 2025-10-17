@@ -7,7 +7,7 @@ Assistant0 an AI personal assistant that consolidates your digital life by dynam
 This template scaffolds an Auth0 + LangChain.js + Next.js starter app. It mainly uses the following libraries:
 
 - [LangChain's Python framework](https://python.langchain.com/docs/introduction/) and [LangGraph.js](https://langchain-ai.github.io/langgraph/) for building agentic workflows.
-- The [Auth0 AI SDK](https://github.com/auth0-lab/auth0-ai-python) and [Auth0 FastAPI SDK](https://github.com/auth0/auth0-fastapi) to secure the application and call third-party APIs.
+- The [Auth0 AI SDK](https://github.com/auth0/auth0-ai-python) and [Auth0 FastAPI SDK](https://github.com/auth0/auth0-fastapi) to secure the application and call third-party APIs.
 - [Auth0 FGA](https://auth0.com/fine-grained-authorization) to define fine-grained access control policies for your tools and RAG pipelines.
 
 ## 🚀 Getting Started
