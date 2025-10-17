@@ -8,13 +8,13 @@ const AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE;
 
 if (!AUTH0_DOMAIN || !AUTH0_AUDIENCE) {
   throw new Error(
-    "Missing AUTH0_DOMAIN or AUTH0_AUDIENCE environment variables"
+      "Missing AUTH0_DOMAIN or AUTH0_AUDIENCE environment variables"
   );
 }
 
 // JWKS endpoint for Auth0
 const JWKS = createRemoteJWKSet(
-  new URL(`https://${AUTH0_DOMAIN}/.well-known/jwks.json`)
+    new URL(`https://${AUTH0_DOMAIN}/.well-known/jwks.json`)
 );
 
 // Create the Auth instance
@@ -51,7 +51,7 @@ auth.authenticate(async (request: Request) => {
     if (!token) {
       throw new HTTPException(401, {
         message:
-          "Authorization header format must be of the form: Bearer <token>",
+            "Authorization header format must be of the form: Bearer <token>",
       });
     }
 
@@ -70,7 +70,7 @@ auth.authenticate(async (request: Request) => {
           identity: payload.sub!,
           email: payload.email as string,
           permissions:
-            typeof payload.scope === "string" ? payload.scope.split(" ") : [],
+              typeof payload.scope === "string" ? payload.scope.split(" ") : [],
           auth_type: "auth0",
           // include the access token for use with Auth0 Token Vault exchanges by tools
           getRawAccessToken: () => token,
@@ -79,8 +79,8 @@ auth.authenticate(async (request: Request) => {
         };
       } catch (jwtError) {
         console.log(
-          "❌ Auth0 JWT validation failed:",
-          jwtError instanceof Error ? jwtError.message : "Unknown error"
+            "❌ Auth0 JWT validation failed:",
+            jwtError instanceof Error ? jwtError.message : "Unknown error"
         );
         throw new HTTPException(401, {
           message: "Invalid Authorization token provided.",
@@ -93,7 +93,7 @@ auth.authenticate(async (request: Request) => {
   } catch (error) {
     console.error("❌ Authentication failed:", error);
     throw new Error(
-      `Authentication failed: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Authentication failed: ${error instanceof Error ? error.message : "Unknown error"}`
     );
   }
 });

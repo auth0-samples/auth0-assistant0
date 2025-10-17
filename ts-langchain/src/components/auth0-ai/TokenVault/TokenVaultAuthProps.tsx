@@ -13,10 +13,11 @@ export type TokenVaultAuthProps = {
   interrupt: {
     connection: string;
     requiredScopes: string[];
+    authorizationParams?: Record<string, string>;
     resume?: () => void;
   };
   auth?: {
-    authorizePath?: string;
+    connectPath?: string;
     returnTo?: string;
   };
   onFinish?: () => void;
