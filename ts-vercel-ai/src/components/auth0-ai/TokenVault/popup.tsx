@@ -7,9 +7,9 @@ import { PromptUserContainer } from "../util/prompt-user-container";
 import { TokenVaultAuthProps } from "./TokenVaultAuthProps";
 
 export function TokenVaultConsentPopup({
-  interrupt: { connection, requiredScopes, resume },
+  interrupt: { connection, requiredScopes, resume, authorizationParams },
   connectWidget: { icon, title, description, action, containerClassName },
-  auth: { authorizePath = "/auth/login", returnTo = "/close" } = {},
+  auth: { connectPath = "/auth/login", returnTo = "/close" } = {},
   onFinish,
 }: TokenVaultAuthProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +50,7 @@ export function TokenVaultConsentPopup({
       connection_scope: requiredScopes.join(),
     });
 
-    const url = new URL(authorizePath, window.location.origin);
+    const url = new URL(connectPath, window.location.origin);
     url.search = search.toString();
 
     const windowFeatures =
@@ -63,7 +63,7 @@ export function TokenVaultConsentPopup({
       setLoginPopup(popup);
       setIsLoading(true);
     }
-  }, [connection, requiredScopes]);
+  }, [connection, requiredScopes, returnTo, authorizationParams, connectPath]);
 
   if (isLoading) {
     return <WaitingMessage />;
