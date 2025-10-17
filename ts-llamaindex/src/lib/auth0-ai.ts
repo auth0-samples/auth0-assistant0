@@ -6,7 +6,13 @@ import { getRefreshToken, getUser } from './auth0';
 // Get the access token for a connection via Auth0
 export const getAccessToken = async () => getAccessTokenFromTokenVault();
 
-const auth0AI = new Auth0AI();
+const auth0AI = new Auth0AI({
+  auth0: {
+    domain: process.env.AUTH0_DOMAIN!,
+    clientId: process.env.CUSTOM_API_CLIENT_ID!, // Resource server client ID for token exchange
+    clientSecret: process.env.CUSTOM_API_CLIENT_SECRET!, // Resource server client secret
+  },
+});
 
 // Connection for Google services
 export const withGoogleConnection = auth0AI.withTokenVault({

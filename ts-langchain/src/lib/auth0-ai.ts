@@ -6,16 +6,16 @@ import { SUBJECT_TOKEN_TYPES } from "@auth0/ai";
 export const getAccessToken = async () => getAccessTokenFromTokenVault();
 
 // Note: we use the Custom API Client when using Token Vault connections that access third party services
-const auth0AICustomAPI = new Auth0AI({
+const auth0AI = new Auth0AI({
   auth0: {
     domain: process.env.AUTH0_DOMAIN!,
-    clientId: process.env.AUTH0_CUSTOM_API_CLIENT_ID!,
-    clientSecret: process.env.AUTH0_CUSTOM_API_CLIENT_SECRET!,
+    clientId: process.env.CUSTOM_API_CLIENT_ID!, // Resource server client ID for token exchange
+    clientSecret: process.env.CUSTOM_API_CLIENT_SECRET!, // Resource server client secret
   },
 });
 
 // Connection for Google services
-export const withGoogleConnection = auth0AICustomAPI.withTokenVault({
+export const withGoogleConnection = auth0AI.withTokenVault({
   connection: 'google-oauth2',
   scopes: [
     'https://www.googleapis.com/auth/gmail.readonly',
@@ -31,7 +31,6 @@ export const withGoogleConnection = auth0AICustomAPI.withTokenVault({
 // Async Authorization flow for user confirmation
 // Note: you must use a client application that has the CIBA grant type enabled
 // in this case, we can use auth0 regular web app client
-const auth0AI = new Auth0AI();
 
 export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
   userID: async (_params, config) => {
