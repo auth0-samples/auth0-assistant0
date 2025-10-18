@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@auth0/ai": "^5.0.0",
+    "@auth0/ai": "^5.0.1",
     "@langchain/core": "^0.3.66",
     "@langchain/langgraph-sdk": "^0.0.109",
     "@radix-ui/react-avatar": "^1.1.10",
