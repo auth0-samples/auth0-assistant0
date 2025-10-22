@@ -39,7 +39,6 @@ with_async_authorization = auth0_ai.with_async_authorization(
     # In practice, the process that is awaiting the user confirmation
     # could crash or timeout before the user approves the request.
     on_authorization_request="block",
-    # Note: Setting a requested expiry greater than 300 (seconds) will force email verification
-    # instead of using the push notification flow.
+    # Controls how long the authorization request is valid.
     # requested_expiry=301,
 )
