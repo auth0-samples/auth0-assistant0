@@ -9,8 +9,8 @@ export const getAccessToken = async () => getAccessTokenFromTokenVault();
 const auth0AICustomAPI = new Auth0AI({
   auth0: {
     domain: process.env.AUTH0_DOMAIN!,
-    clientId: process.env.AUTH0_CUSTOM_API_CLIENT_ID!,
-    clientSecret: process.env.AUTH0_CUSTOM_API_CLIENT_SECRET!,
+    clientId: process.env.AUTH0_CUSTOM_API_CLIENT_ID!, // Resource server client ID for token exchange
+    clientSecret: process.env.AUTH0_CUSTOM_API_CLIENT_SECRET!, // Resource server client secret
   },
 });
 
