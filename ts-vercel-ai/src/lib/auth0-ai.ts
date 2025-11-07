@@ -9,15 +9,20 @@ export const getAccessToken = async () => getAccessTokenFromTokenVault();
 const auth0AI = new Auth0AI();
 
 // Connection for Google services
-export const withGoogleConnection = auth0AI.withTokenVault({
+export const withGmailRead = auth0AI.withTokenVault({
   connection: 'google-oauth2',
-  scopes: [
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/gmail.compose',
-    'https://www.googleapis.com/auth/calendar.events',
-  ],
+  scopes: ['https://www.googleapis.com/auth/gmail.readonly'],
   refreshToken: getRefreshToken,
-  credentialsContext: 'tool-call',
+});
+export const withGmailWrite = auth0AI.withTokenVault({
+  connection: 'google-oauth2',
+  scopes: ['https://www.googleapis.com/auth/gmail.compose'],
+  refreshToken: getRefreshToken,
+});
+export const withCalendar = auth0AI.withTokenVault({
+  connection: 'google-oauth2',
+  scopes: ['https://www.googleapis.com/auth/calendar.events'],
+  refreshToken: getRefreshToken,
 });
 
 // CIBA flow for user confirmation
