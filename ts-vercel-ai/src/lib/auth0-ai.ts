@@ -24,6 +24,11 @@ export const withCalendar = auth0AI.withTokenVault({
   scopes: ['https://www.googleapis.com/auth/calendar.events'],
   refreshToken: getRefreshToken,
 });
+export const withTasks = auth0AI.withTokenVault({
+  connection: 'google-oauth2',
+  scopes: ['https://www.googleapis.com/auth/tasks'],
+  refreshToken: getRefreshToken,
+});
 
 // CIBA flow for user confirmation
 export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
@@ -37,16 +42,16 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
 
   /**
    * Controls how long the authorization request is valid.
-  */
+   */
   // requestedExpiry: 301,
 
   /**
    * The behavior when the authorization request is made.
-   * 
+   *
    * - `block`: The tool execution is blocked until the user completes the authorization.
    * - `interrupt`: The tool execution is interrupted until the user completes the authorization.
    * - a callback: Same as "block" but give access to the auth request and executing logic.
-   * 
+   *
    * Defaults to `interrupt`.
    *
    * When this flag is set to `block`, the execution of the tool awaits
