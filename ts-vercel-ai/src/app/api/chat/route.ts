@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   setAIContext({ threadID: id });
 
   const tools = {
-    serpApiTool,
+    ...(serpApiTool ? { serpApiTool } : {}),
     getUserInfoTool,
     gmailSearchTool,
     gmailDraftTool,

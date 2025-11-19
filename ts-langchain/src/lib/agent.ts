@@ -34,8 +34,6 @@ const googleCalendarParams = {
 };
 const tools = [
   new Calculator(),
-  // Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
-  new SerpAPI(),
   withGmailRead(new GmailSearch(gmailParams)),
   withGmailWrite(new GmailCreateDraft(gmailParams)),
   withCalendar(new GoogleCalendarCreateTool(googleCalendarParams)),
@@ -45,6 +43,10 @@ const tools = [
   withAsyncAuthorization(shopOnlineTool),
   getContextDocumentsTool,
 ];
+// Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
+if (process.env.SERPAPI_API_KEY) {
+  tools.push(new SerpAPI());
+}
 
 const checkpointer = new MemorySaver();
 const store = new InMemoryStore();

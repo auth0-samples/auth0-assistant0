@@ -83,7 +83,7 @@ async function initializeAgent(messages: UIMessage[] = []) {
     const assistant = new OpenAIAgent({
       llm: openai({ model: 'gpt-4.1' }),
       systemPrompt: AGENT_SYSTEM_TEMPLATE,
-      tools,
+      tools: tools.filter(tool => !!tool),
       chatHistory: convertUIMessagesToChatMessages(messages),
       verbose: true,
     });

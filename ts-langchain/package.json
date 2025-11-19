@@ -25,12 +25,12 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@auth0/ai-langchain": "^4.0.0",
-    "@auth0/nextjs-auth0": "4.8.0",
+    "@auth0/ai-langchain": "^4.1.0",
+    "@auth0/nextjs-auth0": "^4.13.0",
     "@langchain/community": "^0.3.53",
     "@langchain/core": "^0.3.72",
     "@langchain/langgraph": "^0.4.6",
-    "@langchain/langgraph-sdk": "^0.0.107",
+    "@langchain/langgraph-sdk": "^0.0.109",
     "@langchain/openai": "0.6.1",
     "@openfga/sdk": "^0.8.0",
     "@radix-ui/react-avatar": "^1.1.7",
