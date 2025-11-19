@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_HOST,
+  baseURL: window.location.origin,
   withCredentials: true,
 });
