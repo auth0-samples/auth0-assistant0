@@ -7,6 +7,7 @@ import { getAccessToken, withGmailRead, withGmailWrite } from '../auth0-ai';
 // Provide the access token to the Gmail tools
 const gmailParams = {
   credentials: {
+    // Get the access token from Auth0 AI
     accessToken: getAccessToken,
   },
 };
