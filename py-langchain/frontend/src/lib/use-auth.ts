@@ -15,6 +15,10 @@ export default function useAuth() {
   };
 }
 
+export function getConnectUrl() {
+    return `/api/auth/connect`;
+}
+
 export function getLoginUrl() {
   return `/api/auth/login?returnTo=${window.location}`;
 }

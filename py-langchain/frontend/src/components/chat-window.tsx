@@ -11,6 +11,7 @@ import { ChatMessageBubble } from "@/components/chat-message-bubble";
 import { TokenVaultInterruptHandler } from "@/components/TokenVaultInterruptHandler";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getConnectUrl } from "@/lib/use-auth";
 
 function ChatMessages(props: {
   messages: Message[];
@@ -188,7 +189,7 @@ export function ChatWindow(props: {
                 {!!chat.interrupt?.value && (
                   <TokenVaultInterruptHandler
                     auth={{
-                      connectPath: "/api/auth/connect",
+                      connectPath: getConnectUrl(),
                       returnTo: new URL(
                         "/close",
                         window.location.origin,
