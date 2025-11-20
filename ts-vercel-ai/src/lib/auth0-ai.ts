@@ -25,7 +25,7 @@ export const withCalendar = auth0AI.withTokenVault({
   refreshToken: getRefreshToken,
 });
 
-export const withGitHubConnection = auth0AI.withTokenForConnection({
+export const withGitHubConnection = auth0AI.withTokenVault({
   connection: 'github',
   // scopes are not supported for GitHub yet. Set required scopes when creating the accompanying GitHub app
   scopes: [],
@@ -33,7 +33,7 @@ export const withGitHubConnection = auth0AI.withTokenForConnection({
   credentialsContext: 'tool-call',
 });
 
-export const withSlack = auth0AI.withTokenForConnection({
+export const withSlack = auth0AI.withTokenVault({
   connection: 'sign-in-with-slack',
   scopes: ['channels:read', 'groups:read'],
   refreshToken: getRefreshToken,

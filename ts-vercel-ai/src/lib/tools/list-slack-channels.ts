@@ -1,17 +1,16 @@
 import { ErrorCode, WebClient } from '@slack/web-api';
-import { getAccessTokenForConnection } from '@auth0/ai-vercel';
-import { FederatedConnectionError } from '@auth0/ai/interrupts';
-import { withSlack } from '@/lib/auth0-ai';
+import { TokenVaultError } from '@auth0/ai/interrupts';
+import { withSlack, getAccessToken } from '@/lib/auth0-ai';
 import { tool } from 'ai';
 import { z } from 'zod';
 
 export const listSlackChannels = withSlack(
   tool({
     description: 'List channels for the current user on Slack',
-    parameters: z.object({}),
+    inputSchema: z.object({}),
     execute: async () => {
       // Get the access token from Auth0 AI
-      const accessToken = getAccessTokenForConnection();
+      const accessToken = await getAccessToken();
 
       // Slack SDK
       try {
@@ -27,7 +26,7 @@ export const listSlackChannels = withSlack(
       } catch (error) {
         if (error && typeof error === 'object' && 'code' in error) {
           if (error.code === ErrorCode.HTTPError) {
-            throw new FederatedConnectionError(`Authorization required to access the Federated Connection`);
+            throw new TokenVaultError(`Authorization required to access the Federated Connection`);
           }
         }
 

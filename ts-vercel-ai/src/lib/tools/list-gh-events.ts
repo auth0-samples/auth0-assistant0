@@ -1,5 +1,5 @@
 import { Octokit, RequestError } from 'octokit';
-import { FederatedConnectionError } from '@auth0/ai/interrupts';
+import { TokenVaultError } from '@auth0/ai/interrupts';
 import { getAccessToken, withGitHubConnection } from '@/lib/auth0-ai';
 import { tool } from 'ai';
 import { z } from 'zod';
@@ -8,7 +8,7 @@ export const listGitHubEvents = withGitHubConnection(
   tool({
     description:
       'List recent events for the current authenticated user on GitHub (e.g., commits, pushes, pull requests, issues, etc.)',
-    parameters: z.object({
+    inputSchema: z.object({
       per_page: z
         .number()
         .min(1)
@@ -66,12 +66,12 @@ export const listGitHubEvents = withGitHubConnection(
 
         if (error instanceof RequestError) {
           if (error.status === 401) {
-            throw new FederatedConnectionError(
+            throw new TokenVaultError(
               `Authorization required to access your GitHub events. Please connect your GitHub account.`,
             );
           }
           if (error.status === 403) {
-            throw new FederatedConnectionError(
+            throw new TokenVaultError(
               `Access forbidden. Your GitHub token may not have the required permissions to access events.`,
             );
           }
