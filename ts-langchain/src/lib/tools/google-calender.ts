@@ -72,3 +72,74 @@ export const getCalendarEventsTool = tool(
     }),
   },
 );
+
+export const createCalendarEventsTool = tool(
+  async ({ summary, description, startDateTime, endDateTime, location, attendees }) => {
+    // Get the access token from Auth0 AI
+    const accessToken = await getAccessToken();
+
+    // Google SDK
+    try {
+      const calendar = google.calendar('v3');
+      const auth = new google.auth.OAuth2();
+
+      auth.setCredentials({
+        access_token: accessToken,
+      });
+
+      // Create the event
+      const response = await calendar.events.insert({
+        auth,
+        calendarId: 'primary',
+        requestBody: {
+          summary,
+          description,
+          location,
+          start: {
+            dateTime: startDateTime,
+            timeZone: 'UTC',
+          },
+          end: {
+            dateTime: endDateTime,
+            timeZone: 'UTC',
+          },
+          attendees: attendees?.map((email) => ({ email })),
+        },
+      });
+
+      const event = response.data;
+
+      return {
+        success: true,
+        eventId: event.id,
+        summary: event.summary,
+        description: event.description,
+        startTime: event.start?.dateTime || event.start?.date,
+        endTime: event.end?.dateTime || event.end?.date,
+        location: event.location,
+        htmlLink: event.htmlLink,
+        message: `Successfully created calendar event: ${event.summary}`,
+      };
+    } catch (error) {
+      if (error instanceof GaxiosError) {
+        if (error.status === 401) {
+          throw new TokenVaultError(`Authorization required to access the Token Vault connection.`);
+        }
+      }
+
+      throw error;
+    }
+  },
+  {
+    name: 'create_calendar_event',
+    description: `Create a new event in the user's Google Calendar. Use this tool to schedule meetings, appointments, or reminders.`,
+    schema: z.object({
+      summary: z.string().describe('The title/summary of the event'),
+      description: z.string().optional().describe('Detailed description of the event'),
+      startDateTime: z.string().describe('Start date and time in ISO 8601 format (e.g., 2025-11-12T14:00:00Z)'),
+      endDateTime: z.string().describe('End date and time in ISO 8601 format (e.g., 2025-11-12T15:00:00Z)'),
+      location: z.string().optional().describe('Location of the event'),
+      attendees: z.array(z.string()).optional().describe('Array of email addresses of attendees to invite'),
+    }),
+  },
+);

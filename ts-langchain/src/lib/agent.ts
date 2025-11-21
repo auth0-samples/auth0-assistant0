@@ -4,13 +4,12 @@ import { InMemoryStore, MemorySaver } from '@langchain/langgraph';
 import { Calculator } from '@langchain/community/tools/calculator';
 import { SerpAPI } from '@langchain/community/tools/serpapi';
 import { GmailCreateDraft, GmailSearch } from '@langchain/community/tools/gmail';
-import { GoogleCalendarCreateTool, GoogleCalendarViewTool } from '@langchain/community/tools/google_calendar';
 
-import { getAccessToken, withCalendar, withGmailRead, withGmailWrite, withAsyncAuthorization } from './auth0-ai';
+import { withCalendar, withGmailRead, withGmailWrite, withAsyncAuthorization } from './auth0-ai';
 import { getUserInfoTool } from './tools/user-info';
 import { shopOnlineTool } from './tools/shop-online';
 import { getContextDocumentsTool } from './tools/context-docs';
-import { getCalendarEventsTool } from './tools/google-calender';
+import { getCalendarEventsTool, createCalendarEventsTool } from './tools/google-calender';
 
 const date = new Date().toISOString();
 
@@ -24,29 +23,25 @@ const llm = new ChatOpenAI({
 // Provide the access token to the Gmail tools
 const gmailParams = {
   credentials: {
-    accessToken: getAccessToken,
+    accessToken: async () => {
+      const { getAccessToken } = await import('./auth0-ai');
+      return getAccessToken();
+    },
   },
 };
 
-const googleCalendarParams = {
-  credentials: { accessToken: getAccessToken, calendarId: 'primary' },
-  model: llm,
-};
 const tools = [
   new Calculator(),
+  // Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
+  // new SerpAPI(),
   withGmailRead(new GmailSearch(gmailParams)),
   withGmailWrite(new GmailCreateDraft(gmailParams)),
-  withCalendar(new GoogleCalendarCreateTool(googleCalendarParams)),
-  withCalendar(new GoogleCalendarViewTool(googleCalendarParams)),
   withCalendar(getCalendarEventsTool),
+  withCalendar(createCalendarEventsTool),
   getUserInfoTool,
   withAsyncAuthorization(shopOnlineTool),
   getContextDocumentsTool,
 ];
-// Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
-if (process.env.SERPAPI_API_KEY) {
-  tools.push(new SerpAPI());
-}
 
 const checkpointer = new MemorySaver();
 const store = new InMemoryStore();
