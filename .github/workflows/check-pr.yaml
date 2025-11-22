@@ -21,3 +21,8 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             Fan va fett :rocket:
+
+      - name: Auto-approve PR
+        uses: hmarr/auto-approve-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
