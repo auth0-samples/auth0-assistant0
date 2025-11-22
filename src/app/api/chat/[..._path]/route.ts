@@ -4,6 +4,7 @@ import { getAccessToken, getUser } from '@/lib/auth0';
 
 
 export const { GET, POST, PUT, PATCH, DELETE, OPTIONS, runtime } = initApiPassthrough({
+  disableWarningLog: true,
   apiUrl: process.env.LANGGRAPH_API_URL,
   baseRoute: 'chat/',
   headers: async () => {
