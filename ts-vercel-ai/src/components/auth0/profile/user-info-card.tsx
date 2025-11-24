@@ -1,4 +1,4 @@
-import { User, Calendar, Mail, Globe, Shield, Clock } from 'lucide-react';
+import { User, Mail, Globe, Shield } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface KeyValueMap {
@@ -20,22 +20,6 @@ function getAvatarFallback(user: KeyValueMap) {
   }
 
   return name?.[0] || 'U';
-}
-
-function formatDate(dateString: string | undefined) {
-  if (!dateString) return 'N/A';
-
-  try {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  } catch {
-    return 'N/A';
-  }
 }
 
 export default function UserInfoCard({ user }: { user: KeyValueMap }) {

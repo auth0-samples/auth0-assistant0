@@ -19,7 +19,7 @@ export default async function ProfilePage() {
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Profile</h1>
-          <p className="text-white/70">Manage your linked connections</p>
+          <p className="text-white/70">Manage your connected accounts</p>
         </div>
 
         <Suspense

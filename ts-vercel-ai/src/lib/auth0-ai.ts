@@ -51,7 +51,7 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
 
   /**
    * Controls how long the authorization request is valid.
-  */
+   */
   // requestedExpiry: 301,
 
   /**
