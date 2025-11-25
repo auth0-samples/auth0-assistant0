@@ -12,8 +12,6 @@ export default async function ProfilePage() {
     redirect('/auth/login');
   }
 
-  const idTokenHint = session?.tokenSet?.idToken!;
-
   return (
     <div className="min-h-full bg-white/5">
       <div className="max-w-4xl mx-auto p-6">
@@ -29,7 +27,7 @@ export default async function ProfilePage() {
             </div>
           }
         >
-          <ProfileContent user={session.user} idTokenHint={idTokenHint} />
+          <ProfileContent user={session.user} />
         </Suspense>
       </div>
     </div>

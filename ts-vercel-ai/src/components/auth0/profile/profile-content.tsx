@@ -10,7 +10,7 @@ interface KeyValueMap {
   [key: string]: any;
 }
 
-export default function ProfileContent({ user, idTokenHint }: { user: KeyValueMap; idTokenHint: string }) {
+export default function ProfileContent({ user }: { user: KeyValueMap }) {
   const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +39,11 @@ export default function ProfileContent({ user, idTokenHint }: { user: KeyValueMa
 
       {/* Linked Accounts Card */}
       <div className="lg:col-span-1">
-        <ConnectedAccountsCard connectedAccounts={connectedAccounts} loading={loading} onAccountDeleted={loadConnectedAccounts} />
+        <ConnectedAccountsCard
+          connectedAccounts={connectedAccounts}
+          loading={loading}
+          onAccountDeleted={loadConnectedAccounts}
+        />
       </div>
     </div>
   );
