@@ -39,7 +39,7 @@ export default function ProfileContent({ user, idTokenHint }: { user: KeyValueMa
 
       {/* Linked Accounts Card */}
       <div className="lg:col-span-1">
-        <ConnectedAccountsCard connectedAccounts={connectedAccounts} loading={loading} />
+        <ConnectedAccountsCard connectedAccounts={connectedAccounts} loading={loading} onAccountDeleted={loadConnectedAccounts} />
       </div>
     </div>
   );
