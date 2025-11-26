@@ -20,7 +20,25 @@ export const listRepositories = withGitHubConnection(
 
         const { data } = await octokit.rest.repos.listForAuthenticatedUser({ visibility: 'all' });
 
-        return data;
+        // Return simplified repository data to avoid overwhelming the LLM
+        const simplifiedRepos = data.map((repo) => ({
+          name: repo.name,
+          full_name: repo.full_name,
+          description: repo.description,
+          private: repo.private,
+          html_url: repo.html_url,
+          language: repo.language,
+          stargazers_count: repo.stargazers_count,
+          forks_count: repo.forks_count,
+          open_issues_count: repo.open_issues_count,
+          updated_at: repo.updated_at,
+          created_at: repo.created_at,
+        }));
+
+        return {
+          total_repositories: simplifiedRepos.length,
+          repositories: simplifiedRepos,
+        };
       } catch (error) {
         console.log('Error', error);
 

@@ -4,6 +4,26 @@ import { getAccessToken, withGitHubConnection } from '@/lib/auth0-ai';
 import { tool } from 'ai';
 import { z } from 'zod';
 
+// Helper function to extract meaningful info from event payloads
+function getPayloadSummary(eventType: string, payload: any): string {
+  switch (eventType) {
+    case 'PushEvent':
+      return `Pushed ${payload.commits?.length || 0} commit(s)`;
+    case 'PullRequestEvent':
+      return `${payload.action} pull request: ${payload.pull_request?.title}`;
+    case 'IssuesEvent':
+      return `${payload.action} issue: ${payload.issue?.title}`;
+    case 'CreateEvent':
+      return `Created ${payload.ref_type}: ${payload.ref || ''}`;
+    case 'WatchEvent':
+      return 'Starred repository';
+    case 'ForkEvent':
+      return 'Forked repository';
+    default:
+      return eventType;
+  }
+}
+
 export const listGitHubEvents = withGitHubConnection(
   tool({
     description:
@@ -51,7 +71,8 @@ export const listGitHubEvents = withGitHubConnection(
             login: event.actor?.login || 'Unknown',
             avatar_url: event.actor?.avatar_url || '',
           },
-          payload: event.payload,
+          // Only include a summary of the payload to avoid overwhelming the LLM
+          payload_summary: getPayloadSummary(event.type, event.payload),
           public: event.public,
         }));
 
