@@ -25,7 +25,8 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@auth0/ai-langchain": "^4.1.0",
+    "@auth0/ai-langchain": "^5.0.0",
+    "@auth0/ai": "^6.0.0",
     "@auth0/nextjs-auth0": "^4.13.0",
     "@langchain/community": "^0.3.53",
     "@langchain/core": "^0.3.72",
@@ -39,6 +40,7 @@
     "@radix-ui/react-dropdown-menu": "^2.1.12",
     "@radix-ui/react-popover": "^1.1.11",
     "@radix-ui/react-slot": "^1.2.0",
+    "@slack/web-api": "^7.9.3",
     "@types/pg": "^8.15.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -56,6 +58,7 @@
     "next": "15.2.4",
     "next-themes": "^0.4.4",
     "nuqs": "^2.4.3",
+    "octokit": "^5.0.3",
     "pdf-parse": "^1.1.1",
     "pg": "^8.16.3",
     "postgres": "^3.4.5",
