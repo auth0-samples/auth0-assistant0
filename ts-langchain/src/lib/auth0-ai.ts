@@ -15,10 +15,10 @@ const auth0AICustomAPI = new Auth0AI({
   },
 });
 
-// Connection for Google services
-export const withGoogleConnection = (scopes: string[]) =>
+// Connection for services
+export const withConnection = (connection: string, scopes: string[]) =>
   auth0AICustomAPI.withTokenVault({
-    connection: 'google-oauth2',
+    connection,
     scopes,
     accessToken: async (_, config) => {
       return config.configurable?.langgraph_auth_user?.getRawAccessToken();
@@ -26,11 +26,28 @@ export const withGoogleConnection = (scopes: string[]) =>
     subjectTokenType: SUBJECT_TOKEN_TYPES.SUBJECT_TYPE_ACCESS_TOKEN,
   });
 
-export const withGmailRead = withGoogleConnection(['openid', 'https://www.googleapis.com/auth/gmail.readonly']);
+export const withGmailRead = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/gmail.readonly',
+]);
 
-export const withGmailWrite = withGoogleConnection(['openid', 'https://www.googleapis.com/auth/gmail.compose']);
+export const withGmailWrite = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/gmail.compose',
+]);
 
-export const withCalendar = withGoogleConnection(['openid', 'https://www.googleapis.com/auth/calendar.events']);
+export const withCalendar = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/calendar.events',
+]);
+
+export const withGitHubConnection = withConnection(
+  'github',
+  // scopes are not supported for GitHub yet. Set required scopes when creating the accompanying GitHub app
+  [],
+);
+
+export const withSlack = withConnection('sign-in-with-slack', ['channels:read', 'groups:read']);
 
 // Async Authorization flow for user confirmation
 // Note: you must use a client application that has the CIBA grant type enabled
@@ -46,6 +63,7 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
   audience: process.env['SHOP_API_AUDIENCE']!,
   /**
    * Controls how long the authorization request is valid.
+   *
    */
   // requestedExpiry: 301,
 

@@ -13,6 +13,9 @@ import { gmailDraftTool, gmailSearchTool } from '@/lib/tools/gmail';
 import { getCalendarEventsTool } from '@/lib/tools/google-calender';
 import { shopOnlineTool } from '@/lib/tools/shop-online';
 import { getContextDocumentsTool } from '@/lib/tools/context-docs';
+import { listRepositoriesTool } from '@/lib/tools/list-gh-repos';
+import { listGitHubEventsTool } from '@/lib/tools/list-gh-events';
+import { listSlackChannelsTool } from '@/lib/tools/list-slack-channels';
 
 const date = new Date().toISOString();
 
@@ -78,12 +81,15 @@ async function initializeAgent(messages: UIMessage[] = []) {
       getCalendarEventsTool,
       shopOnlineTool,
       getContextDocumentsTool,
+      listRepositoriesTool,
+      listGitHubEventsTool,
+      listSlackChannelsTool,
     ];
 
     const assistant = new OpenAIAgent({
-      llm: openai({ model: 'gpt-4.1' }),
+      llm: openai({ model: 'gpt-5-mini', temperature: 1 }),
       systemPrompt: AGENT_SYSTEM_TEMPLATE,
-      tools: tools.filter(tool => !!tool),
+      tools: tools.filter((tool) => !!tool),
       chatHistory: convertUIMessagesToChatMessages(messages),
       verbose: true,
     });

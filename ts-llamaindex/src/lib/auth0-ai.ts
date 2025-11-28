@@ -8,22 +8,36 @@ export const getAccessToken = async () => getAccessTokenFromTokenVault();
 
 const auth0AI = new Auth0AI();
 
-// Connection for Google services
-export const withGmailRead = auth0AI.withTokenVault({
-  connection: 'google-oauth2',
-  scopes: ['openid', 'https://www.googleapis.com/auth/gmail.readonly'],
-  refreshToken: getRefreshToken,
-});
-export const withGmailWrite = auth0AI.withTokenVault({
-  connection: 'google-oauth2',
-  scopes: ['openid', 'https://www.googleapis.com/auth/gmail.compose'],
-  refreshToken: getRefreshToken,
-});
-export const withCalendar = auth0AI.withTokenVault({
-  connection: 'google-oauth2',
-  scopes: ['openid', 'https://www.googleapis.com/auth/calendar.events'],
-  refreshToken: getRefreshToken,
-});
+// Connection for services
+export const withConnection = (connection: string, scopes: string[]) =>
+  auth0AI.withTokenVault({
+    connection,
+    scopes,
+    refreshToken: getRefreshToken,
+  });
+
+export const withGmailRead = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/gmail.readonly',
+]);
+
+export const withGmailWrite = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/gmail.compose',
+]);
+
+export const withCalendar = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/calendar.events',
+]);
+
+export const withGitHubConnection = withConnection(
+  'github',
+  // scopes are not supported for GitHub yet. Set required scopes when creating the accompanying GitHub app
+  [],
+);
+
+export const withSlack = withConnection('sign-in-with-slack', ['channels:read', 'groups:read']);
 
 // CIBA flow for user confirmation
 export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
@@ -37,6 +51,7 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
 
   /**
    * Controls how long the authorization request is valid.
+   *
    */
   // requestedExpiry: 301,
 

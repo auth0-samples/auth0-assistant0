@@ -6,11 +6,22 @@ import { SerpAPI } from '@langchain/community/tools/serpapi';
 import { GmailCreateDraft, GmailSearch } from '@langchain/community/tools/gmail';
 import { GoogleCalendarCreateTool, GoogleCalendarViewTool } from '@langchain/community/tools/google_calendar';
 
-import { getAccessToken, withCalendar, withGmailRead, withGmailWrite, withAsyncAuthorization } from './auth0-ai';
+import {
+  getAccessToken,
+  withCalendar,
+  withGmailRead,
+  withGmailWrite,
+  withAsyncAuthorization,
+  withGitHubConnection,
+  withSlack,
+} from './auth0-ai';
 import { getUserInfoTool } from './tools/user-info';
 import { shopOnlineTool } from './tools/shop-online';
 import { getContextDocumentsTool } from './tools/context-docs';
 import { getCalendarEventsTool } from './tools/google-calender';
+import { listRepositoriesTool } from './tools/list-gh-repos';
+import { listGitHubEventsTool } from './tools/list-gh-events';
+import { listSlackChannelsTool } from './tools/list-slack-channels';
 
 const date = new Date().toISOString();
 
@@ -42,6 +53,9 @@ const tools = [
   getUserInfoTool,
   withAsyncAuthorization(shopOnlineTool),
   getContextDocumentsTool,
+  withGitHubConnection(listRepositoriesTool),
+  withGitHubConnection(listGitHubEventsTool),
+  withSlack(listSlackChannelsTool),
 ];
 // Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
 if (process.env.SERPAPI_API_KEY) {

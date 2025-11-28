@@ -1,18 +1,18 @@
+import { tool } from 'llamaindex';
+import { z } from 'zod';
 import { Octokit, RequestError } from 'octokit';
 import { TokenVaultError } from '@auth0/ai/interrupts';
-import { getAccessToken, withGitHubConnection } from '@/lib/auth0-ai';
-import { tool } from 'ai';
-import { z } from 'zod';
+import { getAccessToken, withGitHubConnection } from '../auth0-ai';
 
-export const listRepositories = withGitHubConnection(
+export const listRepositoriesTool = withGitHubConnection(
   tool({
+    name: 'list_repositories',
     description: 'List data of all repositories for the current user on GitHub',
-    inputSchema: z.object({}),
+    parameters: z.object({}),
     execute: async () => {
       // Get the access token from Auth0 AI
       const accessToken = await getAccessToken();
 
-      // GitHub SDK
       try {
         const octokit = new Octokit({
           auth: accessToken,
@@ -35,10 +35,10 @@ export const listRepositories = withGitHubConnection(
           created_at: repo.created_at,
         }));
 
-        return {
+        return JSON.stringify({
           total_repositories: simplifiedRepos.length,
           repositories: simplifiedRepos,
-        };
+        });
       } catch (error) {
         console.log('Error', error);
 

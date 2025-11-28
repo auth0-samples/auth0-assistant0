@@ -1,13 +1,14 @@
+import { tool } from 'llamaindex';
+import { z } from 'zod';
 import { ErrorCode, WebClient } from '@slack/web-api';
 import { TokenVaultError } from '@auth0/ai/interrupts';
-import { withSlack, getAccessToken } from '@/lib/auth0-ai';
-import { tool } from 'ai';
-import { z } from 'zod';
+import { getAccessToken, withSlack } from '../auth0-ai';
 
-export const listSlackChannels = withSlack(
+export const listSlackChannelsTool = withSlack(
   tool({
+    name: 'list_slack_channels',
     description: 'List channels for the current user on Slack',
-    inputSchema: z.object({}),
+    parameters: z.object({}),
     execute: async () => {
       // Get the access token from Auth0 AI
       const accessToken = await getAccessToken();
