@@ -79,6 +79,13 @@ export default function UserButton({
         )}
 
         <DropdownMenuItem>
+          <a href="/profile" className="flex gap-2 items-center">
+            <User />
+            Profile
+          </a>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem>
           <a href={resolvedLogoutUrl} className="flex gap-2 items-center">
             <LogOut />
             Log out
