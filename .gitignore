@@ -44,3 +44,8 @@ next-env.d.ts
 
 # vscode
 .vscode
+# LangGraph API
+.langgraph_api
+ts-vercel-ai 
+ts-langchain
+ts-llamaindex

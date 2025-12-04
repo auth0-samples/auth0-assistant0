@@ -1,14 +1,16 @@
 'use client';
 
-import { type Message } from 'ai';
-import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
 import { StickToBottom, useStickToBottomContext } from 'use-stick-to-bottom';
 import { ArrowDown, ArrowUpIcon, LoaderCircle } from 'lucide-react';
+import { useQueryState } from 'nuqs';
+import { useStream } from '@langchain/langgraph-sdk/react';
+import { type Message } from '@langchain/langgraph-sdk';
 
-import { ChatMessageBubble } from '@/components/ChatMessageBubble';
+import { TokenVaultInterruptHandler } from '@/components/TokenVaultInterruptHandler';
+import { ChatMessageBubble } from '@/components/chat-message-bubble';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/utils/cn';
 
@@ -21,7 +23,7 @@ function ChatMessages(props: {
   return (
     <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
       {props.messages.map((m, i) => {
-        return <ChatMessageBubble key={m.id} message={m} aiEmoji={props.aiEmoji} />;
+        return <ChatMessageBubble key={m.id} message={m} aiEmoji={props.aiEmoji} allMessages={props.messages} />;
       })}
     </div>
   );
@@ -63,6 +65,7 @@ function ChatInput(props: {
           placeholder={props.placeholder}
           onChange={props.onChange}
           className="border-none outline-none bg-transparent p-4"
+          autoFocus
         />
 
         <div className="flex justify-between ml-4 mr-2 mb-2">
@@ -111,28 +114,36 @@ export function ChatWindow(props: {
   placeholder?: string;
   emoji?: string;
 }) {
-  const chat = useChat({
-    api: props.endpoint,
-    onFinish(response) {
-      console.log('Final response: ', response?.content);
-    },
-    onResponse(response) {
-      console.log('Response received. Status:', response.status);
-    },
-    onError: (e) => {
+  const [threadId, setThreadId] = useQueryState('threadId');
+  const [input, setInput] = useState('');
+  const chat = useStream({
+    apiUrl: props.endpoint,
+    assistantId: 'agent',
+    threadId,
+
+    onThreadId: setThreadId,
+    onError: (e: any) => {
       console.error('Error: ', e);
       toast.error(`Error while processing your request`, { description: e.message });
     },
   });
 
   function isChatLoading(): boolean {
-    return chat.status === 'streaming';
+    return chat.isLoading;
   }
 
   async function sendMessage(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (isChatLoading()) return;
-    chat.handleSubmit(e);
+    chat.submit(
+      { messages: [{ type: 'human', content: input }] },
+      {
+        optimisticValues: (prev) => ({
+          messages: [...((prev?.messages as []) ?? []), { type: 'human', content: input, id: 'temp' }],
+        }),
+      },
+    );
+    setInput('');
   }
 
   return (
@@ -144,19 +155,24 @@ export function ChatWindow(props: {
           chat.messages.length === 0 ? (
             <div>{props.emptyStateComponent}</div>
           ) : (
-            <ChatMessages
-              aiEmoji={props.emoji}
-              messages={chat.messages}
-              emptyStateComponent={props.emptyStateComponent}
-            />
+            <>
+              <ChatMessages
+                aiEmoji={props.emoji}
+                messages={chat.messages}
+                emptyStateComponent={props.emptyStateComponent}
+              />
+              <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
+                <TokenVaultInterruptHandler interrupt={chat.interrupt} onFinish={() => chat.submit(null)} />
+              </div>
+            </>
           )
         }
         footer={
           <div className="sticky bottom-8 px-2">
             <ScrollToBottom className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4" />
             <ChatInput
-              value={chat.input}
-              onChange={chat.handleInputChange}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
               onSubmit={sendMessage}
               loading={isChatLoading()}
               placeholder={props.placeholder ?? 'What can I help you with?'}

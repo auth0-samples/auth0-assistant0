@@ -1,15 +1,23 @@
 import { Auth0Client } from '@auth0/nextjs-auth0/server';
 
 export const auth0 = new Auth0Client({
-  // this is required to get federated access tokens from services like Google
   authorizationParameters: {
-    access_type: 'offline',
-    prompt: 'consent',
+    // In v4, the AUTH0_SCOPE and AUTH0_AUDIENCE environment variables are no longer automatically picked up by the SDK.
+    // Instead, we need to provide the values explicitly.
+    scope: process.env.AUTH0_SCOPE,
+    audience: process.env.AUTH0_AUDIENCE,
   },
+  // required for Token Vault
+  enableConnectAccountEndpoint: true,
 });
 
-// Get the refresh token from Auth0 session
-export const getRefreshToken = async () => {
-  const session = await auth0.getSession();
-  return session?.tokenSet?.refreshToken;
+// Get the Access token from Auth0 session
+export const getAccessToken = async () => {
+  const tokenResult = await auth0.getAccessToken();
+
+  if (!tokenResult || !tokenResult.token) {
+    throw new Error('No access token found in Auth0 session');
+  }
+
+  return tokenResult.token;
 };

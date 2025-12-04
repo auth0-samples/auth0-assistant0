@@ -1,5 +1,5 @@
 import { LogIn, UserPlus } from 'lucide-react';
-import { ChatWindow } from '@/components/ChatWindow';
+import { ChatWindow } from '@/components/chat-window';
 import { GuideInfoBox } from '@/components/guide/GuideInfoBox';
 import { Button } from '@/components/ui/button';
 import { auth0 } from '@/lib/auth0';
@@ -78,7 +78,7 @@ export default async function Home() {
 
   return (
     <ChatWindow
-      endpoint="api/chat"
+      endpoint={`${process.env.APP_BASE_URL}/api/chat`}
       emoji="🤖"
       placeholder={`Hello ${session?.user?.name}, I'm your personal assistant. How can I help you today?`}
       emptyStateComponent={InfoCard}
