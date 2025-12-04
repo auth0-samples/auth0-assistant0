@@ -10,9 +10,14 @@ import {
   withCalendar,
   withGmailRead,
   withGmailWrite,
+  withGitHubConnection,
+  withSlack,
 } from './auth0-ai';
 import { getUserInfoTool } from './tools/user-info';
 import { getCalendarEventsTool } from './tools/google-calendar';
+import { listRepositoriesTool } from './tools/list-gh-repos';
+import { listGitHubEventsTool } from './tools/list-gh-events';
+import { listSlackChannelsTool } from './tools/list-slack-channels';
 
 const date = new Date().toISOString();
 
@@ -36,6 +41,9 @@ const tools = [
   withGmailWrite(new GmailCreateDraft(gmailParams)),
   withCalendar(getCalendarEventsTool),
   getUserInfoTool,
+  withGitHubConnection(listRepositoriesTool),
+  withGitHubConnection(listGitHubEventsTool),
+  withSlack(listSlackChannelsTool),
 ];
 // Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
 if (process.env.SERPAPI_API_KEY) {

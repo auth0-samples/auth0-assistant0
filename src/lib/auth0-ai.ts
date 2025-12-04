@@ -40,3 +40,10 @@ export const withCalendar = withConnection('google-oauth2', [
   'https://www.googleapis.com/auth/calendar.events',
 ]);
 
+export const withGitHubConnection = withConnection(
+  'github',
+  // scopes are not supported for GitHub yet. Set required scopes when creating the accompanying GitHub app
+  [],
+);
+
+export const withSlack = withConnection('sign-in-with-slack', ['channels:read', 'groups:read']);
