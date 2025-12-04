@@ -34,3 +34,9 @@ export const withGmailWrite = withConnection('google-oauth2', [
   'openid',
   'https://www.googleapis.com/auth/gmail.compose',
 ]);
+
+export const withCalendar = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/calendar.events',
+]);
+

@@ -7,9 +7,12 @@ import { GmailCreateDraft, GmailSearch } from '@langchain/community/tools/gmail'
 
 import {
   getAccessToken,
+  withCalendar,
   withGmailRead,
   withGmailWrite,
 } from './auth0-ai';
+import { getUserInfoTool } from './tools/user-info';
+import { getCalendarEventsTool } from './tools/google-calendar';
 
 const date = new Date().toISOString();
 
@@ -31,6 +34,8 @@ const tools = [
   new Calculator(),
   withGmailRead(new GmailSearch(gmailParams)),
   withGmailWrite(new GmailCreateDraft(gmailParams)),
+  withCalendar(getCalendarEventsTool),
+  getUserInfoTool,
 ];
 // Requires process.env.SERPAPI_API_KEY to be set: https://serpapi.com/
 if (process.env.SERPAPI_API_KEY) {
