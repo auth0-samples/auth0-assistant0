@@ -1,8 +1,8 @@
+import { tool } from 'llamaindex';
+import { z } from 'zod';
 import { Octokit, RequestError } from 'octokit';
 import { TokenVaultError } from '@auth0/ai/interrupts';
-import { getAccessToken, withGitHubConnection } from '@/lib/auth0-ai';
-import { tool } from 'ai';
-import { z } from 'zod';
+import { getAccessToken, withGitHubConnection } from '../auth0-ai';
 
 // Helper function to extract meaningful info from event payloads
 function getPayloadSummary(eventType: string, payload: any): string {
@@ -24,11 +24,12 @@ function getPayloadSummary(eventType: string, payload: any): string {
   }
 }
 
-export const listGitHubEvents = withGitHubConnection(
+export const listGitHubEventsTool = withGitHubConnection(
   tool({
+    name: 'list_github_events',
     description:
       'List recent events for the current authenticated user on GitHub (e.g., commits, pushes, pull requests, issues, etc.)',
-    inputSchema: z.object({
+    parameters: z.object({
       per_page: z
         .number()
         .min(1)
@@ -42,7 +43,6 @@ export const listGitHubEvents = withGitHubConnection(
       // Get the access token from Auth0 AI
       const accessToken = await getAccessToken();
 
-      // GitHub SDK
       try {
         const octokit = new Octokit({
           auth: accessToken,
