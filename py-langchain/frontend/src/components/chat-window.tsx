@@ -18,12 +18,19 @@ function ChatMessages(props: {
   emptyStateComponent: ReactNode;
   aiEmoji?: string;
   className?: string;
+  showToolCalls: boolean;
 }) {
   return (
     <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
       {props.messages.map((m) => {
         return (
-          <ChatMessageBubble key={m.id} message={m} aiEmoji={props.aiEmoji} allMessages={props.messages} />
+          <ChatMessageBubble
+            key={m.id}
+            message={m}
+            aiEmoji={props.aiEmoji}
+            allMessages={props.messages}
+            showToolCalls={props.showToolCalls}
+          />
         );
       })}
     </div>
@@ -125,6 +132,7 @@ export function ChatWindow(props: {
 }) {
   const [threadId, setThreadId] = useQueryState("threadId");
   const [input, setInput] = useState("");
+  const [showToolCalls, setShowToolCalls] = useState(true);
 
   const fetchWithCredentials = (url: string | URL | Request, options = {}) => {
     return fetch(url, {
@@ -184,6 +192,7 @@ export function ChatWindow(props: {
                 aiEmoji={props.emoji}
                 messages={chat.messages}
                 emptyStateComponent={props.emptyStateComponent}
+                showToolCalls={showToolCalls}
               />
               <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
                 {!!chat.interrupt?.value && (
@@ -229,7 +238,17 @@ export function ChatWindow(props: {
               onSubmit={sendMessage}
               loading={isChatLoading()}
               placeholder={props.placeholder ?? "What can I help you with?"}
-            ></ChatInput>
+            >
+              <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4"
+                  checked={showToolCalls}
+                  onChange={(e) => setShowToolCalls(e.target.checked)}
+                />
+                Show tool calls
+              </label>
+            </ChatInput>
           </div>
         }
       ></StickyToBottomContent>
