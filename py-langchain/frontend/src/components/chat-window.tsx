@@ -18,8 +18,9 @@ function ChatMessages(props: {
   emptyStateComponent: ReactNode;
   aiEmoji?: string;
   className?: string;
-  showToolCalls: boolean;
+  showToolCalls?: boolean;
 }) {
+  const showToolCalls = props.showToolCalls ?? true;
   return (
     <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
       {props.messages.map((m) => {
@@ -29,7 +30,7 @@ function ChatMessages(props: {
             message={m}
             aiEmoji={props.aiEmoji}
             allMessages={props.messages}
-            showToolCalls={props.showToolCalls}
+            showToolCalls={showToolCalls}
           />
         );
       })}
