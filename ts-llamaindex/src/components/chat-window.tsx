@@ -18,11 +18,20 @@ function ChatMessages(props: {
   emptyStateComponent: ReactNode;
   aiEmoji?: string;
   className?: string;
+  showToolCalls?: boolean;
 }) {
+  const showToolCalls = props.showToolCalls ?? true;
   return (
     <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
       {props.messages.map((m, i) => {
-        return <ChatMessageBubble key={m.id} message={m} aiEmoji={props.aiEmoji} />;
+        return (
+          <ChatMessageBubble
+            key={m.id}
+            message={m}
+            aiEmoji={props.aiEmoji}
+            showToolCalls={showToolCalls}
+          />
+        );
       })}
     </div>
   );
@@ -125,6 +134,7 @@ export function ChatWindow(props: {
   );
 
   const [input, setInput] = useState('');
+  const [showToolCalls, setShowToolCalls] = useState(true);
 
   const isChatLoading = status === 'streaming';
 
@@ -149,6 +159,7 @@ export function ChatWindow(props: {
                 aiEmoji={props.emoji}
                 messages={messages}
                 emptyStateComponent={props.emptyStateComponent}
+                showToolCalls={showToolCalls}
               />
               <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
                 <TokenVaultInterruptHandler interrupt={toolInterrupt} />
@@ -165,7 +176,17 @@ export function ChatWindow(props: {
               onSubmit={onSubmit}
               loading={isChatLoading}
               placeholder={props.placeholder ?? 'What can I help you with?'}
-            ></ChatInput>
+            >
+              <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4"
+                  checked={showToolCalls}
+                  onChange={(e) => setShowToolCalls(e.target.checked)}
+                />
+                Show tool calls
+              </label>
+            </ChatInput>
           </div>
         }
       ></StickyToBottomContent>
