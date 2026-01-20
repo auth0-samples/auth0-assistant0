@@ -140,20 +140,20 @@ wheels = [
 
 [[package]]
 name = "auth0-ai"
-version = "1.0.0b5"
+version = "1.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "auth0-python" },
     { name = "openfga-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7a/d5/2fd49a660993ce678f97e32cf0d0efe6b0f90f0c83a06c98680990b46561/auth0_ai-1.0.0b5.tar.gz", hash = "sha256:21c54ae53b419c9dbe052fb01aa71c73516741d0b403ea0b88af1861dc1c6785", size = 18387, upload-time = "2025-11-19T14:46:03.055Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/18/57/9beab6f558e3e481d5698e2ab152a31b803141a03e6b823a5416a779b8cf/auth0_ai-1.0.2.tar.gz", hash = "sha256:da79dfd7d4751a2438dd1d364cc3a5cc774dd6d5a97f61aac108ebcab0e53b09", size = 18599, upload-time = "2026-01-20T15:08:34.012Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d3/e7/9305c1881ac9ecd11d151da28efb1c34edefccbf6eafd907f8bededf2088/auth0_ai-1.0.0b5-py3-none-any.whl", hash = "sha256:b85e4dadcf6741f8cc70fc222ea84c7cfd88e41c3bca0d3b75ebcf5a4e720df8", size = 26392, upload-time = "2025-11-19T14:46:01.926Z" },
+    { url = "https://files.pythonhosted.org/packages/89/7c/28119b75d8b3ebd84f1281705cc8829fdda663deb2d6350a0e831f4451f7/auth0_ai-1.0.2-py3-none-any.whl", hash = "sha256:b6787d26026c97dad9d5569fb3f36633a157a9e3eede6d9839c4622637b77eac", size = 26485, upload-time = "2026-01-20T15:08:33.245Z" },
 ]
 
 [[package]]
 name = "auth0-ai-langchain"
-version = "1.0.0b5"
+version = "1.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "auth0-ai" },
@@ -163,9 +163,9 @@ dependencies = [
     { name = "langgraph-sdk" },
     { name = "openfga-sdk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/32/5e/a0b2b96a877ad0fe26ca3783e2450a9fef44be474164227bcff551d5e539/auth0_ai_langchain-1.0.0b5.tar.gz", hash = "sha256:117c165a5bdabcaa1fa05da06b6d000446e2d35dd1dfd417221d77cc1dbe3f92", size = 16727, upload-time = "2025-11-19T14:49:05.268Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/38/ce/9995043d7078e116859929087db17ecf40d2591026b4dd327ebd4c64d409/auth0_ai_langchain-1.0.1.tar.gz", hash = "sha256:0d0af57ae492ef08e81617aecc278b3019e82ef8f83069550509f3f905d9706a", size = 16962, upload-time = "2026-01-20T15:11:55.721Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/98/85b2e6c1d146c54bab53e34c65894e65647450781008ab930f5c6b35f9e3/auth0_ai_langchain-1.0.0b5-py3-none-any.whl", hash = "sha256:68d901ec088ae80ea469c7fced57d47156b0d66b177ad5308b2c015d90e2cd36", size = 17833, upload-time = "2025-11-19T14:49:03.403Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/57/666b06b853ba60df845c3e2a3a4eb48da7ff9f8256384672cd330ccbf8dc/auth0_ai_langchain-1.0.1-py3-none-any.whl", hash = "sha256:b72a8cbccb1236d4c50fdffdc7d981180f90b7ad477f2a1ad29d1096f80a6247", size = 17937, upload-time = "2026-01-20T15:11:54.856Z" },
 ]
 
 [[package]]
@@ -257,8 +257,8 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "auth0-ai", specifier = ">=1.0.0b5" },
-    { name = "auth0-ai-langchain", specifier = ">=1.0.0b5" },
+    { name = "auth0-ai", specifier = ">=1.0.2" },
+    { name = "auth0-ai-langchain", specifier = ">=1.0.1" },
     { name = "auth0-fastapi", specifier = ">=1.0.0b5" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.14" },
     { name = "google-api-python-client", specifier = ">=2.176.0" },
