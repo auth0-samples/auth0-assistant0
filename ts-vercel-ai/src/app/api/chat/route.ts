@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     listSlackChannels,
   };
 
-  const modelMessages = convertToModelMessages(messages);
+  const modelMessages = await convertToModelMessages(messages);
 
   const stream = createUIMessageStream({
     originalMessages: messages,

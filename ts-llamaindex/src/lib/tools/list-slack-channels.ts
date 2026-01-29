@@ -23,7 +23,9 @@ export const listSlackChannelsTool = withSlack(
           limit: 10,
         });
 
-        const channelNames = result.channels?.map((channel) => channel.name) || [];
+        const channelNames = result.channels
+          ?.filter((channel) => channel.name)
+          .map((channel) => channel.name!) ?? [];
 
         return {
           total_channels: channelNames.length,
