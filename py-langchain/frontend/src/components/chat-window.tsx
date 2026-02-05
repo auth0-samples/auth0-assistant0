@@ -8,10 +8,10 @@ import { useStream } from "@langchain/langgraph-sdk/react";
 import { type Message } from "@langchain/langgraph-sdk";
 
 import { ChatMessageBubble } from "@/components/chat-message-bubble";
-import { TokenVaultInterruptHandler } from "@/components/auth0-ai/TokenVault/TokenVaultInterruptHandler";
+import { TokenVaultInterruptHandler } from "@/components/TokenVaultInterruptHandler";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { getLoginUrl } from "@/lib/use-auth";
+import { getConnectUrl } from "@/lib/use-auth";
 
 function ChatMessages(props: {
   messages: Message[];
@@ -21,7 +21,7 @@ function ChatMessages(props: {
 }) {
   return (
     <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
-      {props.messages.map((m, i) => {
+      {props.messages.map((m) => {
         return (
           <ChatMessageBubble key={m.id} message={m} aiEmoji={props.aiEmoji} allMessages={props.messages} />
         );
@@ -126,7 +126,7 @@ export function ChatWindow(props: {
   const [threadId, setThreadId] = useQueryState("threadId");
   const [input, setInput] = useState("");
 
-  const fetchWithCredentials = (url, options = {}) => {
+  const fetchWithCredentials = (url: string | URL | Request, options = {}) => {
     return fetch(url, {
       ...options,
       credentials: "include",
@@ -134,7 +134,7 @@ export function ChatWindow(props: {
   };
 
   const chat = useStream({
-    apiUrl: `${import.meta.env.VITE_API_HOST}${props.endpoint}`,
+    apiUrl: `${window.location.origin}${props.endpoint}`,
     assistantId: "agent",
     threadId,
     callerOptions: {
@@ -189,7 +189,7 @@ export function ChatWindow(props: {
                 {!!chat.interrupt?.value && (
                   <TokenVaultInterruptHandler
                     auth={{
-                      authorizePath: getLoginUrl(),
+                      connectPath: getConnectUrl(),
                       returnTo: new URL(
                         "/close",
                         window.location.origin,
@@ -205,6 +205,12 @@ export function ChatWindow(props: {
                               required_scopes: [string];
                             }
                           ).required_scopes || [],
+                        authorizationParams:
+                          (
+                            chat.interrupt.value as {
+                              authorization_params: Record<string, string>;
+                            }
+                          ).authorization_params || {},
                       },
                     }}
                     onFinish={() => chat.submit(null)}

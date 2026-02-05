@@ -13,6 +13,9 @@ import { gmailDraftTool, gmailSearchTool } from '@/lib/tools/gmail';
 import { getCalendarEventsTool } from '@/lib/tools/google-calender';
 import { shopOnlineTool } from '@/lib/tools/shop-online';
 import { getContextDocumentsTool } from '@/lib/tools/context-docs';
+import { listRepositoriesTool } from '@/lib/tools/list-gh-repos';
+import { listGitHubEventsTool } from '@/lib/tools/list-gh-events';
+import { listSlackChannelsTool } from '@/lib/tools/list-slack-channels';
 
 const date = new Date().toISOString();
 
@@ -20,7 +23,7 @@ const AGENT_SYSTEM_TEMPLATE = `You are a personal assistant named Assistant0. Yo
 You have access to a set of tools. When using tools, you MUST provide valid JSON arguments. Always format tool call arguments as proper JSON objects.
 For example, when calling shop_online tool, format like this:
 {"product": "iPhone", "qty": 1, "priceLimit": 1000}
-Use the tools as needed to answer the user's question. Render the email body as a markdown block, do not wrap it in code blocks. Today is ${date}.`;
+Use the tools as needed to answer the user's question. Render the email body as a markdown block, do not wrap it in code blocks. The current date and time is ${date}.`;
 
 // Convert UIMessage array to ChatMessage array for LlamaIndex
 function convertUIMessagesToChatMessages(messages: UIMessage[]): ChatMessage[] {
@@ -78,12 +81,15 @@ async function initializeAgent(messages: UIMessage[] = []) {
       getCalendarEventsTool,
       shopOnlineTool,
       getContextDocumentsTool,
+      listRepositoriesTool,
+      listGitHubEventsTool,
+      listSlackChannelsTool,
     ];
 
     const assistant = new OpenAIAgent({
-      llm: openai({ model: 'gpt-4.1' }),
+      llm: openai({ model: 'gpt-5-mini', temperature: 1 }),
       systemPrompt: AGENT_SYSTEM_TEMPLATE,
-      tools,
+      tools: tools.filter((tool) => !!tool),
       chatHistory: convertUIMessagesToChatMessages(messages),
       verbose: true,
     });

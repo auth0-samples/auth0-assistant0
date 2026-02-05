@@ -9,7 +9,7 @@ import { useQueryState } from 'nuqs';
 import { useStream } from '@langchain/langgraph-sdk/react';
 import { type Message } from '@langchain/langgraph-sdk';
 
-import { TokenVaultInterruptHandler } from '@/components/auth0-ai/TokenVault/TokenVaultInterruptHandler';
+import { TokenVaultInterruptHandler } from '@/components/TokenVaultInterruptHandler';
 import { ChatMessageBubble } from '@/components/chat-message-bubble';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/utils/cn';
@@ -23,7 +23,7 @@ function ChatMessages(props: {
   return (
     <div className="flex flex-col max-w-[768px] mx-auto pb-12 w-full">
       {props.messages.map((m, i) => {
-        return <ChatMessageBubble key={m.id} message={m} aiEmoji={props.aiEmoji} allMessages={props.messages}/>;
+        return <ChatMessageBubble key={m.id} message={m} aiEmoji={props.aiEmoji} allMessages={props.messages} />;
       })}
     </div>
   );

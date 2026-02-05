@@ -17,6 +17,9 @@ import { getCalendarEventsTool } from '@/lib/tools/google-calender';
 import { getTasksTool, createTasksTool } from '@/lib/tools/google-tasks';
 import { shopOnlineTool } from '@/lib/tools/shop-online';
 import { getContextDocumentsTool } from '@/lib/tools/context-docs';
+import { listRepositories } from '@/lib/tools/list-gh-repos';
+import { listGitHubEvents } from '@/lib/tools/list-gh-events';
+import { listSlackChannels } from '@/lib/tools/list-slack-channels';
 
 const date = new Date().toISOString();
 
@@ -24,7 +27,7 @@ const AGENT_SYSTEM_TEMPLATE = `You are a personal assistant named Assistant0. Yo
 You have access to a set of tools. When using tools, you MUST provide valid JSON arguments. Always format tool call arguments as proper JSON objects.
 For example, when calling shop_online tool, format like this:
 {"product": "iPhone", "qty": 1, "priceLimit": 1000}
-Use the tools as needed to answer the user's question. Render the email body as a markdown block, do not wrap it in code blocks. Today is ${date}.`;
+Use the tools as needed to answer the user's question. Render the email body as a markdown block, do not wrap it in code blocks. The current date and time is ${date}.`;
 
 /**
  * This handler initializes and calls an tool calling agent.
@@ -35,7 +38,7 @@ export async function POST(req: NextRequest) {
   setAIContext({ threadID: id });
 
   const tools = {
-    serpApiTool,
+    ...(serpApiTool ? { serpApiTool } : {}),
     getUserInfoTool,
     gmailSearchTool,
     gmailDraftTool,
@@ -44,9 +47,12 @@ export async function POST(req: NextRequest) {
     createTasksTool,
     shopOnlineTool,
     getContextDocumentsTool,
+    listRepositories,
+    listGitHubEvents,
+    listSlackChannels,
   };
 
-  const modelMessages = convertToModelMessages(messages);
+  const modelMessages = await convertToModelMessages(messages);
 
   const stream = createUIMessageStream({
     originalMessages: messages,

@@ -11,7 +11,7 @@ auth_config = Auth0Config(
     secret=settings.AUTH0_SECRET,
     app_base_url=f"{settings.APP_BASE_URL}{settings.API_PREFIX}",
     mount_routes=True,
-    mount_connect_routes=True,
+    mount_connected_account_routes=True,
     authorization_params={
         "scope": "openid profile email offline_access",
     },
