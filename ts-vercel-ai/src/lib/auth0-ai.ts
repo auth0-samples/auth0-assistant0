@@ -38,6 +38,11 @@ export const withSlack = auth0AI.withTokenVault({
   scopes: ['channels:read', 'groups:read'],
   refreshToken: getRefreshToken,
 });
+export const withTasks = auth0AI.withTokenVault({
+  connection: 'google-oauth2',
+  scopes: ['https://www.googleapis.com/auth/tasks'],
+  refreshToken: getRefreshToken,
+});
 
 // CIBA flow for user confirmation
 export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({

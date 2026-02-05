@@ -14,6 +14,7 @@ import { serpApiTool } from '@/lib/tools/serpapi';
 import { getUserInfoTool } from '@/lib/tools/user-info';
 import { gmailDraftTool, gmailSearchTool } from '@/lib/tools/gmail';
 import { getCalendarEventsTool } from '@/lib/tools/google-calender';
+import { getTasksTool, createTasksTool } from '@/lib/tools/google-tasks';
 import { shopOnlineTool } from '@/lib/tools/shop-online';
 import { getContextDocumentsTool } from '@/lib/tools/context-docs';
 import { listRepositories } from '@/lib/tools/list-gh-repos';
@@ -42,6 +43,8 @@ export async function POST(req: NextRequest) {
     gmailSearchTool,
     gmailDraftTool,
     getCalendarEventsTool,
+    getTasksTool,
+    createTasksTool,
     shopOnlineTool,
     getContextDocumentsTool,
     listRepositories,
