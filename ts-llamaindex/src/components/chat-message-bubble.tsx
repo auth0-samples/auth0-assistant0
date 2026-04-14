@@ -117,10 +117,11 @@ function ToolCallDisplay({ toolCall }: {
   );
 }
 
-export function ChatMessageBubble(props: { message: UIMessage; aiEmoji?: string }) {
+export function ChatMessageBubble(props: { message: UIMessage; aiEmoji?: string; showToolCalls?: boolean }) {
   const { message, aiEmoji } = props;
   const text = uiMessageToText(message);
   const toolCalls = getToolCallsFromMessage(message);
+  const shouldShowToolCalls = (props.showToolCalls ?? true) && toolCalls.length > 0;
 
   return (
     <div
@@ -138,7 +139,7 @@ export function ChatMessageBubble(props: { message: UIMessage; aiEmoji?: string 
 
       <div className="chat-message-bubble whitespace-pre-wrap flex flex-col prose dark:prose-invert max-w-none">
         {/* Render tool calls if present */}
-        {toolCalls.length > 0 && (
+        {shouldShowToolCalls && (
           <div className="mb-3">
             {toolCalls.map((toolCall, index) => (
               <ToolCallDisplay key={`${toolCall.toolCallId}-${index}`} toolCall={toolCall} />

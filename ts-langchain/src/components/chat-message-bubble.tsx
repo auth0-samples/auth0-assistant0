@@ -51,7 +51,12 @@ function ToolCallDisplay({
   );
 }
 
-export function ChatMessageBubble(props: { message: Message; aiEmoji?: string; allMessages?: Message[] }) {
+export function ChatMessageBubble(props: {
+  message: Message;
+  aiEmoji?: string;
+  allMessages?: Message[];
+  showToolCalls?: boolean;
+}) {
   const toolCalls = props.message.type === 'ai' ? props.message.tool_calls || [] : [];
   
   // Get message content as string
@@ -107,7 +112,7 @@ export function ChatMessageBubble(props: { message: Message; aiEmoji?: string; a
   const toolResultContent = getToolResultContent();
   
   // Show tool calls if we have any
-  const shouldShowToolCalls = hasToolCalls;
+  const shouldShowToolCalls = (props.showToolCalls ?? true) && hasToolCalls;
   
   if (!(['human', 'ai'].includes(props.message.type) && (hasContent || shouldShowToolCalls))) {
     return null;
