@@ -8,7 +8,7 @@ import { StickToBottom, useStickToBottomContext } from 'use-stick-to-bottom';
 import { ArrowDown, ArrowUpIcon, LoaderCircle } from 'lucide-react';
 import { useInterruptions } from '@auth0/ai-vercel/react';
 
-import { TokenVaultInterruptHandler } from '@/components/auth0-ai/TokenVault/TokenVaultInterruptHandler';
+import { TokenVaultInterruptHandler } from '@/components/TokenVaultInterruptHandler';
 import { ChatMessageBubble } from '@/components/chat-message-bubble';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/utils/cn';

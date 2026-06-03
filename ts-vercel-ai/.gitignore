@@ -46,3 +46,6 @@ next-env.d.ts
 .vscode
 # LangGraph API
 .langgraph_api
+
+# Bun
+bun.lock

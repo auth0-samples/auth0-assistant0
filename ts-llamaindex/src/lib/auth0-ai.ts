@@ -8,17 +8,36 @@ export const getAccessToken = async () => getAccessTokenFromTokenVault();
 
 const auth0AI = new Auth0AI();
 
-// Connection for Google services
-export const withGoogleConnection = auth0AI.withTokenVault({
-  connection: 'google-oauth2',
-  scopes: [
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/gmail.compose',
-    'https://www.googleapis.com/auth/calendar.events',
-  ],
-  refreshToken: getRefreshToken,
-  credentialsContext: 'tool-call',
-});
+// Connection for services
+export const withConnection = (connection: string, scopes: string[]) =>
+  auth0AI.withTokenVault({
+    connection,
+    scopes,
+    refreshToken: getRefreshToken,
+  });
+
+export const withGmailRead = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/gmail.readonly',
+]);
+
+export const withGmailWrite = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/gmail.compose',
+]);
+
+export const withCalendar = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/calendar.events',
+]);
+
+export const withGitHubConnection = withConnection(
+  'github',
+  // scopes are not supported for GitHub yet. Set required scopes when creating the accompanying GitHub app
+  [],
+);
+
+export const withSlack = withConnection('sign-in-with-slack', ['channels:read', 'groups:read']);
 
 // CIBA flow for user confirmation
 export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
@@ -31,8 +50,8 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
   audience: process.env['AUDIENCE']!,
 
   /**
-   * Note: setting a requestedExpiry to >= 301 will currently ensure email is used. Otherwise,
-   * the default is to use push notification if available.
+   * Controls how long the authorization request is valid.
+   *
    */
   // requestedExpiry: 301,
 
@@ -55,7 +74,7 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
    * could crash or timeout before the user approves the request.
    */
   onAuthorizationRequest: async (authReq, creds) => {
-    console.log(`An authorization request was sent to your mobile device or your email.`);
+    console.log(`An authorization request was sent to your mobile device.`);
     await creds;
     console.log(`Thanks for approving the order.`);
   },

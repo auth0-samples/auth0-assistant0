@@ -5,9 +5,9 @@ import { google } from 'googleapis';
 import { z } from 'zod';
 import { TokenVaultError } from '@auth0/ai/interrupts';
 
-import { getAccessToken, withGoogleConnection } from '../auth0-ai';
+import { getAccessToken, withCalendar } from '../auth0-ai';
 
-export const getCalendarEventsTool = withGoogleConnection(
+export const getCalendarEventsTool = withCalendar(
   tool({
     name: 'getCalendarEvents',
     description: `Get calendar events for a given date from the user's Google Calendar`,

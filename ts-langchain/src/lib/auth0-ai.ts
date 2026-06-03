@@ -1,6 +1,6 @@
 import { Auth0AI, getAccessTokenFromTokenVault } from '@auth0/ai-langchain';
 import { AccessDeniedInterrupt } from '@auth0/ai/interrupts';
-import { SUBJECT_TOKEN_TYPES } from "@auth0/ai";
+import { SUBJECT_TOKEN_TYPES } from '@auth0/ai';
 
 // Get the access token for a connection via Auth0
 export const getAccessToken = async () => getAccessTokenFromTokenVault();
@@ -9,24 +9,45 @@ export const getAccessToken = async () => getAccessTokenFromTokenVault();
 const auth0AICustomAPI = new Auth0AI({
   auth0: {
     domain: process.env.AUTH0_DOMAIN!,
-    clientId: process.env.AUTH0_CUSTOM_API_CLIENT_ID!,
-    clientSecret: process.env.AUTH0_CUSTOM_API_CLIENT_SECRET!,
+    // For token exchange with Token Vault, we want to provide the Custom API Client credentials
+    clientId: process.env.AUTH0_CUSTOM_API_CLIENT_ID!, // Custom API Client ID for token exchange
+    clientSecret: process.env.AUTH0_CUSTOM_API_CLIENT_SECRET!, // Custom API Client secret
   },
 });
 
-// Connection for Google services
-export const withGoogleConnection = auth0AICustomAPI.withTokenVault({
-  connection: 'google-oauth2',
-  scopes: [
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/gmail.compose',
-    'https://www.googleapis.com/auth/calendar.events',
-  ],
-  accessToken: async (_, config) => {
+// Connection for services
+export const withConnection = (connection: string, scopes: string[]) =>
+  auth0AICustomAPI.withTokenVault({
+    connection,
+    scopes,
+    accessToken: async (_, config) => {
       return config.configurable?.langgraph_auth_user?.getRawAccessToken();
-  },
-  subjectTokenType: SUBJECT_TOKEN_TYPES.SUBJECT_TYPE_ACCESS_TOKEN,
-});
+    },
+    subjectTokenType: SUBJECT_TOKEN_TYPES.SUBJECT_TYPE_ACCESS_TOKEN,
+  });
+
+export const withGmailRead = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/gmail.readonly',
+]);
+
+export const withGmailWrite = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/gmail.compose',
+]);
+
+export const withCalendar = withConnection('google-oauth2', [
+  'openid',
+  'https://www.googleapis.com/auth/calendar.events',
+]);
+
+export const withGitHubConnection = withConnection(
+  'github',
+  // scopes are not supported for GitHub yet. Set required scopes when creating the accompanying GitHub app
+  [],
+);
+
+export const withSlack = withConnection('sign-in-with-slack', ['channels:read', 'groups:read']);
 
 // Async Authorization flow for user confirmation
 // Note: you must use a client application that has the CIBA grant type enabled
@@ -41,18 +62,18 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
   scopes: ['openid', 'product:buy'],
   audience: process.env['SHOP_API_AUDIENCE']!,
   /**
-   * Note: setting a requestedExpiry to >= 301 will currently ensure email is used. Otherwise,
-   * the default is to use push notification if available.
-  */
+   * Controls how long the authorization request is valid.
+   *
+   */
   // requestedExpiry: 301,
 
   /**
    * The behavior when the authorization request is made.
-   * 
+   *
    * - `block`: The tool execution is blocked until the user completes the authorization.
    * - `interrupt`: The tool execution is interrupted until the user completes the authorization.
    * - a callback: Same as "block" but give access to the auth request and executing logic.
-   * 
+   *
    * Defaults to `interrupt`.
    *
    * When this flag is set to `block`, the execution of the tool awaits
@@ -64,7 +85,7 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
    * could crash or timeout before the user approves the request.
    */
   onAuthorizationRequest: async (authReq, creds) => {
-    console.log(`An authorization request was sent to your mobile device or your email.`);
+    console.log(`An authorization request was sent to your mobile device.`);
     await creds;
     console.log(`Thanks for approving the order.`);
   },

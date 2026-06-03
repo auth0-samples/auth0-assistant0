@@ -44,7 +44,7 @@ export default function Layout() {
           )}
           <Button asChild variant="header" size="default">
             <a
-              href="https://github.com/auth0-samples/auth0-assistant0-python"
+              href="https://github.com/auth0-samples/auth0-assistant0"
               target="_blank"
             >
               <Github className="size-3" />
