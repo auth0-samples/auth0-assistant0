@@ -11,17 +11,36 @@ const auth0AI = new Auth0AI();
 // Connection for Google services
 export const withGmailRead = auth0AI.withTokenVault({
   connection: 'google-oauth2',
-  scopes: ['https://www.googleapis.com/auth/gmail.readonly'],
+  scopes: ['openid', 'https://www.googleapis.com/auth/gmail.readonly'],
   refreshToken: getRefreshToken,
 });
 export const withGmailWrite = auth0AI.withTokenVault({
   connection: 'google-oauth2',
-  scopes: ['https://www.googleapis.com/auth/gmail.compose'],
+  scopes: ['openid', 'https://www.googleapis.com/auth/gmail.compose'],
   refreshToken: getRefreshToken,
 });
 export const withCalendar = auth0AI.withTokenVault({
   connection: 'google-oauth2',
-  scopes: ['https://www.googleapis.com/auth/calendar.events'],
+  scopes: ['openid', 'https://www.googleapis.com/auth/calendar.events'],
+  refreshToken: getRefreshToken,
+});
+
+export const withGitHubConnection = auth0AI.withTokenVault({
+  connection: 'github',
+  // scopes are not supported for GitHub yet. Set required scopes when creating the accompanying GitHub app
+  scopes: [],
+  refreshToken: getRefreshToken,
+  credentialsContext: 'tool-call',
+});
+
+export const withSlack = auth0AI.withTokenVault({
+  connection: 'sign-in-with-slack',
+  scopes: ['channels:read', 'groups:read'],
+  refreshToken: getRefreshToken,
+});
+export const withTasks = auth0AI.withTokenVault({
+  connection: 'google-oauth2',
+  scopes: ['https://www.googleapis.com/auth/tasks'],
   refreshToken: getRefreshToken,
 });
 
@@ -37,16 +56,16 @@ export const withAsyncAuthorization = auth0AI.withAsyncAuthorization({
 
   /**
    * Controls how long the authorization request is valid.
-  */
+   */
   // requestedExpiry: 301,
 
   /**
    * The behavior when the authorization request is made.
-   * 
+   *
    * - `block`: The tool execution is blocked until the user completes the authorization.
    * - `interrupt`: The tool execution is interrupted until the user completes the authorization.
    * - a callback: Same as "block" but give access to the auth request and executing logic.
-   * 
+   *
    * Defaults to `interrupt`.
    *
    * When this flag is set to `block`, the execution of the tool awaits

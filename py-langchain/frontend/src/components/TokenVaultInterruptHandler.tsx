@@ -7,7 +7,7 @@ interface TokenVaultInterruptHandlerProps {
   interrupt: Interrupt | undefined | null;
   onFinish: () => void;
   auth?: {
-    authorizePath?: string;
+    connectPath?: string;
     returnTo?: string;
   };
 }

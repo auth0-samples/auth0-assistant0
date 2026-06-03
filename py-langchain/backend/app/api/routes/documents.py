@@ -6,8 +6,10 @@ from io import BytesIO
 from fastapi import APIRouter, Depends, File, UploadFile
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
-from sqlmodel import Session, select, update, col, delete
+from sqlmodel import Session, select, update, col, delete, or_
 
+from sqlalchemy import literal
+from sqlalchemy.sql.expression import any_
 from app.core.auth import auth_client
 from app.core.db import engine
 from app.core.fga import authorization_manager
@@ -28,6 +30,7 @@ def get_documents(
     user = auth_session.get("user")
 
     with Session(engine) as db_session:
+        user_email = user.get("email")
         documents = db_session.exec(
             select(
                 Document.id,
@@ -38,7 +41,12 @@ def get_documents(
                 Document.user_id,
                 Document.user_email,
                 Document.shared_with,
-            ).where(Document.user_id == user.get("sub"))
+            ).where(
+                or_(
+                    Document.user_id == user.get("sub"),
+                    literal(user_email) == any_(col(Document.shared_with)),
+                )
+            )
         ).all()
 
         return [
@@ -123,16 +131,23 @@ async def upload_document(
         return document
 
 
-@documents_router.get(
-    "/{document_id}/content",
-    dependencies=[Depends(auth_client.require_session)],
-)
-def get_document_content(document_id: str):
+@documents_router.get("/{document_id}/content")
+async def get_document_content(
+    document_id: str, auth_session=Depends(auth_client.require_session)
+):
+    user = auth_session.get("user")
+
     with Session(engine) as db_session:
         document = db_session.get(Document, document_id)
 
         if not document:
             raise HTTPException(status_code=404, detail="Document not found")
+
+        allowed = await authorization_manager.check_relation(
+            user.get("email"), document_id, "can_view"
+        )
+        if not allowed:
+            raise HTTPException(status_code=403, detail="Access denied")
 
         encoded_content = base64.b64encode(document.content).decode("utf-8")
 
@@ -149,6 +164,13 @@ async def share_document(
     input: ShareDocumentRequest,
     auth_session=Depends(auth_client.require_session),
 ):
+    user = auth_session.get("user")
+    is_owner = await authorization_manager.check_relation(
+        user.get("email"), document_id, "owner"
+    )
+    if not is_owner:
+        raise HTTPException(status_code=403, detail="Only the document owner can share")
+
     with Session(engine) as db_session:
         shared_with = db_session.exec(
             select(Document.shared_with).where(col(Document.id) == document_id)
@@ -176,6 +198,13 @@ async def share_document(
 async def delete_document(
     document_id: str, auth_session=Depends(auth_client.require_session)
 ):
+    user = auth_session.get("user")
+    is_owner = await authorization_manager.check_relation(
+        user.get("email"), document_id, "owner"
+    )
+    if not is_owner:
+        raise HTTPException(status_code=403, detail="Only the document owner can delete")
+
     with Session(engine) as db_session:
         shared_with = db_session.exec(
             select(Document.shared_with).where(col(Document.id) == document_id)
@@ -185,7 +214,6 @@ async def delete_document(
             raise HTTPException(status_code=404, detail="Document not found")
 
         # Remove the relationship tuple from FGA
-        user = auth_session.get("user")
         await authorization_manager.delete_relation(user.get("email"), str(document_id))
 
         # Delete the shared_with relationships from FGA

@@ -1,6 +1,10 @@
+import logging
+
 from openfga_sdk import ClientConfiguration, OpenFgaClient
 from openfga_sdk.credentials import Credentials, CredentialConfiguration
-from openfga_sdk.client.models import ClientTuple, ClientWriteRequest
+from openfga_sdk.client.models import ClientCheckRequest, ClientTuple, ClientWriteRequest
+
+logger = logging.getLogger(__name__)
 
 from app.core.config import settings
 
@@ -24,7 +28,7 @@ class AuthorizationManager:
             ),
         )
 
-        print("Connecting to FGA...")
+        logger.info("Connecting to FGA...")
         self.openfga_client = OpenFgaClient(openfga_client_config)
 
     async def add_relation(
@@ -42,6 +46,19 @@ class AuthorizationManager:
                 ]
             )
         )
+
+    async def check_relation(
+        self, user_email: str, document_id: str, relation: str = "can_view"
+    ) -> bool:
+        assert self.openfga_client is not None
+        response = await self.openfga_client.check(
+            ClientCheckRequest(
+                user=f"user:{user_email}",
+                relation=relation,
+                object=f"doc:{document_id}",
+            )
+        )
+        return response.allowed
 
     async def delete_relation(
         self, user_email: str, document_id: str, relation: str = "owner"

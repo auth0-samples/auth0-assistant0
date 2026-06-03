@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
-import { WaitingMessage } from "../util/loader";
-import { PromptUserContainer } from "../util/prompt-user-container";
-import { TokenVaultAuthProps } from "./TokenVaultAuthProps";
+import { WaitingMessage } from '../util/loader';
+import { PromptUserContainer } from '../util/prompt-user-container';
+
+import type { TokenVaultAuthProps } from './TokenVaultAuthProps';
 
 export function TokenVaultConsentPopup({
-  interrupt: { connection, requiredScopes, resume },
+  interrupt: { connection, requiredScopes, authorizationParams, resume },
   connectWidget: { icon, title, description, action, containerClassName },
-  auth: { authorizePath = "/auth/login", returnTo = "/close" } = {},
+  auth: { connectPath = '/auth/connect', returnTo = '/close' } = {},
   onFinish,
 }: TokenVaultAuthProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -26,9 +27,9 @@ export function TokenVaultConsentPopup({
         setIsLoading(false);
         setLoginPopup(null);
         clearInterval(interval);
-        if (typeof onFinish === "function") {
+        if (typeof onFinish === 'function') {
           onFinish();
-        } else if (typeof resume === "function") {
+        } else if (typeof resume === 'function') {
           resume();
         }
       }
@@ -43,27 +44,29 @@ export function TokenVaultConsentPopup({
   //Open the login popup
   const startLoginPopup = useCallback(async () => {
     const search = new URLSearchParams({
-      returnTo,
       connection,
-      access_type: "offline",
-      prompt: "consent",
-      connection_scope: requiredScopes.join(),
+      returnTo,
+      // Add all extra authorization parameters to the search params, they will be collected and submitted via the
+      // authorization_params parameter of the connect account flow.
+      ...authorizationParams,
     });
+    for (const requiredScope of requiredScopes) {
+      search.append('scopes', requiredScope);
+    }
 
-    const url = new URL(authorizePath, window.location.origin);
+    const url = new URL(connectPath, window.location.origin);
     url.search = search.toString();
 
-    const windowFeatures =
-      "width=800,height=650,status=no,toolbar=no,menubar=no";
-    const popup = window.open(url.toString(), "_blank", windowFeatures);
+    const windowFeatures = 'width=800,height=650,status=no,toolbar=no,menubar=no';
+    const popup = window.open(url.toString(), '_blank', windowFeatures);
     if (!popup) {
-      console.error("Popup blocked by the browser");
+      console.error('Popup blocked by the browser');
       return;
     } else {
       setLoginPopup(popup);
       setIsLoading(true);
     }
-  }, [connection, requiredScopes]);
+  }, [connection, requiredScopes, returnTo, authorizationParams, connectPath]);
 
   if (isLoading) {
     return <WaitingMessage />;
@@ -76,7 +79,7 @@ export function TokenVaultConsentPopup({
       icon={icon}
       containerClassName={containerClassName}
       action={{
-        label: action?.label ?? "Connect",
+        label: action?.label ?? 'Connect',
         onClick: startLoginPopup,
       }}
     />

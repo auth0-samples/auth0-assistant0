@@ -91,3 +91,6 @@ pip-delete-this-directory.txt
 .venv
 venv/
 env/
+
+**/VALIDATION_REPORT.md
+.remember/

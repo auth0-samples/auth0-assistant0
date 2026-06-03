@@ -1,7 +1,10 @@
 import json
+import logging
 import httpx
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi import APIRouter, Depends, HTTPException, Request
+
+logger = logging.getLogger(__name__)
 
 from app.core.config import settings
 from app.core.auth import auth_client
@@ -77,4 +80,5 @@ async def api_route(
             )
 
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        logger.exception("Unexpected error in agent proxy")
+        return JSONResponse(status_code=500, content={"error": "An unexpected error occurred"})
