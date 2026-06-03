@@ -4,8 +4,6 @@ import { InMemoryStore, MemorySaver } from '@langchain/langgraph';
 import { Calculator } from '@langchain/community/tools/calculator';
 import { SerpAPI } from '@langchain/community/tools/serpapi';
 import { GmailCreateDraft, GmailSearch } from '@langchain/community/tools/gmail';
-import { GoogleCalendarCreateTool, GoogleCalendarViewTool } from '@langchain/community/tools/google_calendar';
-
 import {
   getAccessToken,
   withCalendar,
@@ -22,6 +20,11 @@ import { getCalendarEventsTool } from './tools/google-calender';
 import { listRepositoriesTool } from './tools/list-gh-repos';
 import { listGitHubEventsTool } from './tools/list-gh-events';
 import { listSlackChannelsTool } from './tools/list-slack-channels';
+import { withCalendar, withGmailRead, withGmailWrite, withAsyncAuthorization } from './auth0-ai';
+import { getUserInfoTool } from './tools/user-info';
+import { shopOnlineTool } from './tools/shop-online';
+import { getContextDocumentsTool } from './tools/context-docs';
+import { getCalendarEventsTool, createCalendarEventsTool } from './tools/google-calender';
 
 const date = new Date().toISOString();
 
@@ -35,21 +38,19 @@ const llm = new ChatOpenAI({
 // Provide the access token to the Gmail tools
 const gmailParams = {
   credentials: {
-    accessToken: getAccessToken,
+    accessToken: async () => {
+      const { getAccessToken } = await import('./auth0-ai');
+      return getAccessToken();
+    },
   },
 };
 
-const googleCalendarParams = {
-  credentials: { accessToken: getAccessToken, calendarId: 'primary' },
-  model: llm,
-};
 const tools = [
   new Calculator(),
   withGmailRead(new GmailSearch(gmailParams)),
   withGmailWrite(new GmailCreateDraft(gmailParams)),
-  withCalendar(new GoogleCalendarCreateTool(googleCalendarParams)),
-  withCalendar(new GoogleCalendarViewTool(googleCalendarParams)),
   withCalendar(getCalendarEventsTool),
+  withCalendar(createCalendarEventsTool),
   getUserInfoTool,
   withAsyncAuthorization(shopOnlineTool),
   getContextDocumentsTool,
